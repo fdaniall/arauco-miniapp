@@ -1,22 +1,15 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Wallet } from "@coinbase/onchainkit/wallet";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
-// import { useQuickAuth } from "@coinbase/onchainkit/minikit";
 import styles from "./page.module.css";
 
 export default function Home() {
-  // If you need to verify the user's identity, you can use the useQuickAuth hook.
-  // This hook will verify the user's signature and return the user's FID. You can update
-  // this to meet your needs. See the /app/api/auth/route.ts file for more details.
-  // Note: If you don't need to verify the user's identity, you can get their FID and other user data
-  // via `useMiniKit().context?.user`.
-  // const { data, isLoading, error } = useQuickAuth<{
-  //   userFid: string;
-  // }>("/api/auth");
-
   const { setMiniAppReady, isMiniAppReady } = useMiniKit();
+  const [daysWatered, setDaysWatered] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [canWater, setCanWater] = useState(true);
 
   useEffect(() => {
     if (!isMiniAppReady) {
@@ -24,59 +17,149 @@ export default function Home() {
     }
   }, [setMiniAppReady, isMiniAppReady]);
 
+  const handleWaterTree = () => {
+    // TODO: Implement watering logic with API call
+    setDaysWatered((prev) => prev + 1);
+    setCurrentStreak((prev) => prev + 1);
+    setCanWater(false);
+
+    // Reset after 24h (for demo, reset after 10s)
+    setTimeout(() => setCanWater(true), 10000);
+  };
+
+  const getTreeStage = () => {
+    if (daysWatered === 0) return "Seed";
+    if (daysWatered < 3) return "Sprout";
+    if (daysWatered < 7) return "Young Tree";
+    if (daysWatered < 14) return "Mature Tree";
+    return "Forest Tree";
+  };
+
   return (
     <div className={styles.container}>
-      <header className={styles.headerWrapper}>
+      {/* Header with Logo and Wallet */}
+      <header className={styles.header}>
+        <div className={styles.logoContainer}>
+          <Image
+            src="/logo-arauco.png"
+            alt="Arauco"
+            width={50}
+            height={50}
+            className={styles.logo}
+          />
+        </div>
         <Wallet />
       </header>
 
-      <div className={styles.content}>
-        <Image
-          priority
-          src="/sphere.svg"
-          alt="Sphere"
-          width={200}
-          height={200}
-        />
-        <h1 className={styles.title}>MiniKit</h1>
+      {/* Hero Section */}
+      <main className={styles.main}>
+        <div className={styles.hero}>
+          <h1 className={styles.title}>
+            Arauco Forest
+          </h1>
+          <p className={styles.subtitle}>
+            Water Your Tree Daily. Grow Your Forest.
+          </p>
+        </div>
 
-        <p>
-          Get started by editing <code>app/page.tsx</code>
-        </p>
+        {/* Tree Visualization */}
+        <div className={styles.treeSection}>
+          <div className={styles.treeContainer}>
+            <div className={styles.treeStageWrapper}>
+              <div className={`${styles.treeVisual} ${styles[`stage${daysWatered}`]}`}>
+                {/* Tree will be rendered here - placeholder for now */}
+                <div className={styles.treePlaceholder}>
+                  <span className={styles.treeEmoji}>
+                    {daysWatered === 0 && "🌱"}
+                    {daysWatered >= 1 && daysWatered < 3 && "🌿"}
+                    {daysWatered >= 3 && daysWatered < 7 && "🌳"}
+                    {daysWatered >= 7 && daysWatered < 14 && "🌲"}
+                    {daysWatered >= 14 && "🌳🌲🌳"}
+                  </span>
+                </div>
+                <div className={styles.treeStage}>{getTreeStage()}</div>
+              </div>
+            </div>
+          </div>
 
-        <h2 className={styles.componentsTitle}>Explore Components</h2>
+          {/* Stats */}
+          <div className={styles.stats}>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{daysWatered}</div>
+              <div className={styles.statLabel}>Days Watered</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>{currentStreak}</div>
+              <div className={styles.statLabel}>Current Streak</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.statValue}>0</div>
+              <div className={styles.statLabel}>Extra Water</div>
+            </div>
+          </div>
 
-        <ul className={styles.components}>
-          {[
-            {
-              name: "Transaction",
-              url: "https://docs.base.org/onchainkit/transaction/transaction",
-            },
-            {
-              name: "Swap",
-              url: "https://docs.base.org/onchainkit/swap/swap",
-            },
-            {
-              name: "Checkout",
-              url: "https://docs.base.org/onchainkit/checkout/checkout",
-            },
-            {
-              name: "Wallet",
-              url: "https://docs.base.org/onchainkit/wallet/wallet",
-            },
-            {
-              name: "Identity",
-              url: "https://docs.base.org/onchainkit/identity/identity",
-            },
-          ].map((component) => (
-            <li key={component.name}>
-              <a target="_blank" rel="noreferrer" href={component.url}>
-                {component.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+          {/* Water Button */}
+          <button
+            className={`${styles.waterButton} ${!canWater ? styles.disabled : ""}`}
+            onClick={handleWaterTree}
+            disabled={!canWater}
+          >
+            {canWater ? "💧 Water Tree" : "⏰ Come Back Tomorrow"}
+          </button>
+        </div>
+
+        {/* How It Works */}
+        <div className={styles.infoSection}>
+          <h2 className={styles.sectionTitle}>How It Works</h2>
+          <div className={styles.features}>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🌱</div>
+              <h3>Start Your Tree</h3>
+              <p>Mint your unique tree NFT and begin your growth journey on Base</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>💧</div>
+              <h3>Water Daily</h3>
+              <p>Water once per day to keep your tree healthy and growing</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>📈</div>
+              <h3>Watch It Grow</h3>
+              <p>Your tree evolves through 5 stages from seed to forest tree</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>🎁</div>
+              <h3>Earn Rewards</h3>
+              <p>Complete tasks for extra water and unlock rare tree NFTs</p>
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className={styles.ctaSection}>
+          <h2 className={styles.ctaTitle}>Ready to Grow Your Forest?</h2>
+          <p className={styles.ctaText}>
+            Join thousands growing their trees daily on Farcaster
+          </p>
+          <button className={styles.ctaButton}>
+            Get Started
+          </button>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className={styles.footer}>
+        <p>Built on Base with OnchainKit</p>
+        <div className={styles.footerLinks}>
+          <a href="https://docs.base.org" target="_blank" rel="noreferrer">
+            Docs
+          </a>
+          <span>•</span>
+          <a href="https://warpcast.com" target="_blank" rel="noreferrer">
+            Farcaster
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
