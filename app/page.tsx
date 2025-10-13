@@ -15,7 +15,7 @@ export default function Home() {
   const { setMiniAppReady, isMiniAppReady } = useMiniKit();
   const [daysWatered, setDaysWatered] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
-  const [extraWater, setExtraWater] = useState(0);
+  const [extraWater, _setExtraWater] = useState(0);
   const [canWater, setCanWater] = useState(true);
   const [isWatering, setIsWatering] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
