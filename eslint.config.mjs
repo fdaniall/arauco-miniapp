@@ -10,16 +10,17 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     ignores: [
-      "lib/**",
-      "out/**",
-      "cache/**",
-      "broadcast/**",
-      "app/contracts/TreeNFT.abi.ts",
+      "**/lib/**",
+      "**/out/**",
+      "**/cache/**",
+      "**/broadcast/**",
+      "**/node_modules/**",
+      "**/.next/**",
     ],
   },
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
       "@typescript-eslint/no-unused-vars": [

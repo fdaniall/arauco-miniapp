@@ -107,13 +107,13 @@ export function useTreeNFT() {
    */
   const parsedTreeData = treeData
     ? {
-        waterCount: Number(treeData[0]),
-        lastWateredDay: Number(treeData[1]),
-        currentStreak: Number(treeData[2]),
-        longestStreak: Number(treeData[3]),
-        extraWater: Number(treeData[4]),
-        stage: Number(treeData[5]),
-        exists: Boolean(treeData[6]),
+        waterCount: Number((treeData as unknown[])[0]),
+        lastWateredDay: Number((treeData as unknown[])[1]),
+        currentStreak: Number((treeData as unknown[])[2]),
+        longestStreak: Number((treeData as unknown[])[3]),
+        extraWater: Number((treeData as unknown[])[4]),
+        stage: Number((treeData as unknown[])[5]),
+        exists: Boolean((treeData as unknown[])[6]),
       }
     : null;
 
