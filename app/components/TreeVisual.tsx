@@ -246,13 +246,16 @@ export function TreeVisual({ stage, isWatering }: TreeVisualProps) {
             <motion.div
               key={i}
               className={styles.waterDrop}
+              style={{
+                left: "50%",
+                top: "-20px",
+              }}
               initial={{
-                x: Math.random() * 120 - 60, // Centered around tree (120px spread, -60 to +60)
-                y: -20,
+                x: Math.random() * 80 - 40, // Spread ±40px from center
                 opacity: 1,
               }}
               animate={{
-                y: 200,
+                y: 220,
                 opacity: 0,
               }}
               transition={{

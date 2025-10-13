@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styles from "./FeatureDetailModal.module.css";
 
@@ -17,6 +18,20 @@ interface FeatureDetailModalProps {
 }
 
 export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailModalProps) {
+  // Disable body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!feature) return null;
 
   return (

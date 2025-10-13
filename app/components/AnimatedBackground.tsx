@@ -1,19 +1,23 @@
 "use client";
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export function AnimatedBackground() {
-  // Generate particle data once (SSR-safe with useMemo)
-  const particles = useMemo(
-    () =>
+  // Generate particle data only on client side
+  const [particles, setParticles] = useState<Array<{ x: number; y: number; duration: number; delay: number }>>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    setParticles(
       [...Array(20)].map(() => ({
         x: Math.random() * 100,
         y: Math.random() * 100,
         duration: Math.random() * 10 + 10,
         delay: Math.random() * 5,
-      })),
-    []
-  );
+      }))
+    );
+  }, []);
 
   return (
     <div className="animated-background">
@@ -58,8 +62,8 @@ export function AnimatedBackground() {
         }}
       />
 
-      {/* Floating Particles */}
-      {particles.map((particle, i) => (
+      {/* Floating Particles - only render on client */}
+      {mounted && particles.map((particle, i) => (
         <motion.div
           key={i}
           className="particle"
