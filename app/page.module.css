@@ -1,8 +1,8 @@
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #1a3a2e 0%, #0f2419 100%);
   color: #ffffff;
 }
 
@@ -88,39 +88,14 @@
   gap: 1rem;
 }
 
-.treeVisual {
-  position: relative;
-  width: 200px;
-  height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s ease;
-}
-
-.treeVisual:hover {
-  transform: scale(1.05);
-}
-
-.treePlaceholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.treeEmoji {
-  font-size: 8rem;
-  animation: growAnimation 0.5s ease-out;
-}
-
 .treeStage {
   font-size: 1.25rem;
   font-weight: 600;
   color: #a8e6cf;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  margin-top: 1rem;
+  text-align: center;
 }
 
 /* Stats */
@@ -129,34 +104,6 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
-}
-
-.statCard {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1.5rem 1rem;
-  text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-}
-
-.statCard:hover {
-  background: rgba(255, 255, 255, 0.08);
-  transform: translateY(-2px);
-}
-
-.statValue {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #a8e6cf;
-  margin-bottom: 0.5rem;
-}
-
-.statLabel {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 /* Water Button */

@@ -3,13 +3,23 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Wallet } from "@coinbase/onchainkit/wallet";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
+import { motion } from "framer-motion";
+import toast, { Toaster } from "react-hot-toast";
+import { AnimatedBackground } from "./components/AnimatedBackground";
+import { TreeVisual } from "./components/TreeVisual";
+import { StatsCard, DropletIcon, FlameIcon, SparklesIcon } from "./components/StatsCard";
+import { CelebrationModal } from "./components/CelebrationModal";
 import styles from "./page.module.css";
 
 export default function Home() {
   const { setMiniAppReady, isMiniAppReady } = useMiniKit();
   const [daysWatered, setDaysWatered] = useState(0);
   const [currentStreak, setCurrentStreak] = useState(0);
+  const [extraWater, setExtraWater] = useState(0);
   const [canWater, setCanWater] = useState(true);
+  const [isWatering, setIsWatering] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [celebrationData, setCelebrationData] = useState({ milestone: "", message: "" });
 
   useEffect(() => {
     if (!isMiniAppReady) {
@@ -18,12 +28,75 @@ export default function Home() {
   }, [setMiniAppReady, isMiniAppReady]);
 
   const handleWaterTree = () => {
-    // TODO: Implement watering logic with API call
-    setDaysWatered((prev) => prev + 1);
-    setCurrentStreak((prev) => prev + 1);
+    if (!canWater) return;
+
+    // Start watering animation
+    setIsWatering(true);
     setCanWater(false);
 
-    // Reset after 24h (for demo, reset after 10s)
+    // Show toast
+    toast.success("💧 Watering your tree...", {
+      duration: 2000,
+      style: {
+        background: "#1a3a2e",
+        color: "#fff",
+        border: "1px solid rgba(168, 230, 207, 0.3)",
+      },
+    });
+
+    // Simulate API call delay
+    setTimeout(() => {
+      const newDaysWatered = daysWatered + 1;
+      const newStreak = currentStreak + 1;
+
+      setDaysWatered(newDaysWatered);
+      setCurrentStreak(newStreak);
+      setIsWatering(false);
+
+      // Check for milestones
+      if (newDaysWatered === 1) {
+        setCelebrationData({
+          milestone: "First Drop!",
+          message: "You've planted your first seed. Keep watering daily to watch it grow!",
+        });
+        setShowCelebration(true);
+      } else if (newDaysWatered === 3) {
+        setCelebrationData({
+          milestone: "Sprout Unlocked!",
+          message: "Your dedication is showing! Your tree is starting to sprout.",
+        });
+        setShowCelebration(true);
+      } else if (newDaysWatered === 7) {
+        setCelebrationData({
+          milestone: "One Week Streak! 🔥",
+          message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
+        });
+        setShowCelebration(true);
+      } else if (newDaysWatered === 14) {
+        setCelebrationData({
+          milestone: "Mature Tree Achievement! 🌳",
+          message: "Two weeks of consistent care! Your tree has matured beautifully.",
+        });
+        setShowCelebration(true);
+      } else if (newDaysWatered === 30) {
+        setCelebrationData({
+          milestone: "Forest Guardian! 🏆",
+          message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
+        });
+        setShowCelebration(true);
+      }
+
+      // Success toast
+      toast.success("✨ Tree watered successfully!", {
+        duration: 2000,
+        style: {
+          background: "#2d6e55",
+          color: "#fff",
+        },
+      });
+    }, 2000);
+
+    // Reset cooldown (10s for demo, will be 24h in production)
     setTimeout(() => setCanWater(true), 10000);
   };
 
@@ -35,131 +108,208 @@ export default function Home() {
     return "Forest Tree";
   };
 
+  const getTreeStageIndex = () => {
+    if (daysWatered === 0) return 0;
+    if (daysWatered < 3) return 1;
+    if (daysWatered < 7) return 2;
+    if (daysWatered < 14) return 3;
+    return 4;
+  };
+
   return (
-    <div className={styles.container}>
-      {/* Header with Logo and Wallet */}
-      <header className={styles.header}>
-        <div className={styles.logoContainer}>
-          <Image
-            src="/logo-arauco.png"
-            alt="Arauco"
-            width={50}
-            height={50}
-            className={styles.logo}
-          />
-        </div>
-        <Wallet />
-      </header>
+    <>
+      <Toaster position="top-center" />
+      <AnimatedBackground />
+      <CelebrationModal
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        milestone={celebrationData.milestone}
+        message={celebrationData.message}
+      />
 
-      {/* Hero Section */}
-      <main className={styles.main}>
-        <div className={styles.hero}>
-          <h1 className={styles.title}>
-            Arauco Forest
-          </h1>
-          <p className={styles.subtitle}>
-            Water Your Tree Daily. Grow Your Forest.
-          </p>
-        </div>
+      <div className={styles.container}>
+        {/* Header with Logo and Wallet */}
+        <motion.header
+          className={styles.header}
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className={styles.logoContainer}>
+            <Image
+              src="/logo-arauco.png"
+              alt="Arauco"
+              width={50}
+              height={50}
+              className={styles.logo}
+            />
+          </div>
+          <Wallet />
+        </motion.header>
 
-        {/* Tree Visualization */}
-        <div className={styles.treeSection}>
-          <div className={styles.treeContainer}>
-            <div className={styles.treeStageWrapper}>
-              <div className={`${styles.treeVisual} ${styles[`stage${daysWatered}`]}`}>
-                {/* Tree will be rendered here - placeholder for now */}
-                <div className={styles.treePlaceholder}>
-                  <span className={styles.treeEmoji}>
-                    {daysWatered === 0 && "🌱"}
-                    {daysWatered >= 1 && daysWatered < 3 && "🌿"}
-                    {daysWatered >= 3 && daysWatered < 7 && "🌳"}
-                    {daysWatered >= 7 && daysWatered < 14 && "🌲"}
-                    {daysWatered >= 14 && "🌳🌲🌳"}
-                  </span>
-                </div>
-                <div className={styles.treeStage}>{getTreeStage()}</div>
+        {/* Hero Section */}
+        <main className={styles.main}>
+          <motion.div
+            className={styles.hero}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            <h1 className={styles.title}>Arauco Forest</h1>
+            <p className={styles.subtitle}>Water Your Tree Daily. Grow Your Forest.</p>
+          </motion.div>
+
+          {/* Tree Visualization */}
+          <motion.div
+            className={styles.treeSection}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            <div className={styles.treeContainer}>
+              <div className={styles.treeStageWrapper}>
+                <TreeVisual stage={getTreeStageIndex()} isWatering={isWatering} />
+                <motion.div
+                  className={styles.treeStage}
+                  key={getTreeStage()}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {getTreeStage()}
+                </motion.div>
               </div>
             </div>
-          </div>
 
-          {/* Stats */}
-          <div className={styles.stats}>
-            <div className={styles.statCard}>
-              <div className={styles.statValue}>{daysWatered}</div>
-              <div className={styles.statLabel}>Days Watered</div>
+            {/* Stats */}
+            <div className={styles.stats}>
+              <StatsCard
+                value={daysWatered}
+                label="Days Watered"
+                icon={<DropletIcon />}
+                gradient="rgba(74, 157, 127, 0.2) 0%, rgba(45, 110, 85, 0.2) 100%"
+                delay={0.5}
+              />
+              <StatsCard
+                value={currentStreak}
+                label="Current Streak"
+                icon={<FlameIcon />}
+                gradient="rgba(255, 152, 0, 0.2) 0%, rgba(255, 87, 34, 0.2) 100%"
+                delay={0.6}
+              />
+              <StatsCard
+                value={extraWater}
+                label="Extra Water"
+                icon={<SparklesIcon />}
+                gradient="rgba(100, 181, 246, 0.2) 0%, rgba(30, 136, 229, 0.2) 100%"
+                delay={0.7}
+              />
             </div>
-            <div className={styles.statCard}>
-              <div className={styles.statValue}>{currentStreak}</div>
-              <div className={styles.statLabel}>Current Streak</div>
-            </div>
-            <div className={styles.statCard}>
-              <div className={styles.statValue}>0</div>
-              <div className={styles.statLabel}>Extra Water</div>
-            </div>
-          </div>
 
-          {/* Water Button */}
-          <button
-            className={`${styles.waterButton} ${!canWater ? styles.disabled : ""}`}
-            onClick={handleWaterTree}
-            disabled={!canWater}
+            {/* Water Button */}
+            <motion.button
+              className={`${styles.waterButton} ${!canWater ? styles.disabled : ""}`}
+              onClick={handleWaterTree}
+              disabled={!canWater || isWatering}
+              whileHover={canWater && !isWatering ? { scale: 1.05 } : {}}
+              whileTap={canWater && !isWatering ? { scale: 0.95 } : {}}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              {isWatering
+                ? "💧 Watering..."
+                : canWater
+                ? "💧 Water Tree"
+                : "⏰ Come Back Tomorrow"}
+            </motion.button>
+          </motion.div>
+
+          {/* How It Works */}
+          <motion.div
+            className={styles.infoSection}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            {canWater ? "💧 Water Tree" : "⏰ Come Back Tomorrow"}
-          </button>
-        </div>
+            <h2 className={styles.sectionTitle}>How It Works</h2>
+            <div className={styles.features}>
+              {[
+                {
+                  icon: "🌱",
+                  title: "Start Your Tree",
+                  desc: "Mint your unique tree NFT and begin your growth journey on Base",
+                },
+                {
+                  icon: "💧",
+                  title: "Water Daily",
+                  desc: "Water once per day to keep your tree healthy and growing",
+                },
+                {
+                  icon: "📈",
+                  title: "Watch It Grow",
+                  desc: "Your tree evolves through 5 stages from seed to forest tree",
+                },
+                {
+                  icon: "🎁",
+                  title: "Earn Rewards",
+                  desc: "Complete tasks for extra water and unlock rare tree NFTs",
+                },
+              ].map((feature, i) => (
+                <motion.div
+                  key={i}
+                  className={styles.featureCard}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  whileHover={{ y: -5 }}
+                >
+                  <div className={styles.featureIcon}>{feature.icon}</div>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
-        {/* How It Works */}
-        <div className={styles.infoSection}>
-          <h2 className={styles.sectionTitle}>How It Works</h2>
-          <div className={styles.features}>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>🌱</div>
-              <h3>Start Your Tree</h3>
-              <p>Mint your unique tree NFT and begin your growth journey on Base</p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>💧</div>
-              <h3>Water Daily</h3>
-              <p>Water once per day to keep your tree healthy and growing</p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>📈</div>
-              <h3>Watch It Grow</h3>
-              <p>Your tree evolves through 5 stages from seed to forest tree</p>
-            </div>
-            <div className={styles.featureCard}>
-              <div className={styles.featureIcon}>🎁</div>
-              <h3>Earn Rewards</h3>
-              <p>Complete tasks for extra water and unlock rare tree NFTs</p>
-            </div>
+          {/* CTA Section */}
+          <motion.div
+            className={styles.ctaSection}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className={styles.ctaTitle}>Ready to Grow Your Forest?</h2>
+            <p className={styles.ctaText}>
+              Join thousands growing their trees daily on Farcaster
+            </p>
+            <motion.button
+              className={styles.ctaButton}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Get Started
+            </motion.button>
+          </motion.div>
+        </main>
+
+        {/* Footer */}
+        <footer className={styles.footer}>
+          <p>Built on Base with OnchainKit</p>
+          <div className={styles.footerLinks}>
+            <a href="https://docs.base.org" target="_blank" rel="noreferrer">
+              Docs
+            </a>
+            <span>•</span>
+            <a href="https://warpcast.com" target="_blank" rel="noreferrer">
+              Farcaster
+            </a>
           </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className={styles.ctaSection}>
-          <h2 className={styles.ctaTitle}>Ready to Grow Your Forest?</h2>
-          <p className={styles.ctaText}>
-            Join thousands growing their trees daily on Farcaster
-          </p>
-          <button className={styles.ctaButton}>
-            Get Started
-          </button>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className={styles.footer}>
-        <p>Built on Base with OnchainKit</p>
-        <div className={styles.footerLinks}>
-          <a href="https://docs.base.org" target="_blank" rel="noreferrer">
-            Docs
-          </a>
-          <span>•</span>
-          <a href="https://warpcast.com" target="_blank" rel="noreferrer">
-            Farcaster
-          </a>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </div>
+    </>
   );
 }
