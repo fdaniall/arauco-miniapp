@@ -1,14 +1,19 @@
 "use client";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 
 export function AnimatedBackground() {
-  // Generate particle data (SSR-safe)
-  const particles = [...Array(20)].map(() => ({
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    duration: Math.random() * 10 + 10,
-    delay: Math.random() * 5,
-  }));
+  // Generate particle data once (SSR-safe with useMemo)
+  const particles = useMemo(
+    () =>
+      [...Array(20)].map(() => ({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        duration: Math.random() * 10 + 10,
+        delay: Math.random() * 5,
+      })),
+    []
+  );
 
   return (
     <div className="animated-background">

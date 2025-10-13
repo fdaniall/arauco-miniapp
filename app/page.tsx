@@ -9,6 +9,7 @@ import { AnimatedBackground } from "./components/AnimatedBackground";
 import { TreeVisual } from "./components/TreeVisual";
 import { StatsCard, DropletIcon, FlameIcon, SparklesIcon } from "./components/StatsCard";
 import { CelebrationModal } from "./components/CelebrationModal";
+import { FeatureDetailModal, FEATURES_DATA } from "./components/FeatureDetailModal";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -20,6 +21,8 @@ export default function Home() {
   const [isWatering, setIsWatering] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState({ milestone: "", message: "" });
+  const [showFeatureModal, setShowFeatureModal] = useState(false);
+  const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isMiniAppReady) {
@@ -116,6 +119,11 @@ export default function Home() {
     return 4;
   };
 
+  const handleFeatureClick = (featureKey: string) => {
+    setSelectedFeature(featureKey);
+    setShowFeatureModal(true);
+  };
+
   return (
     <>
       <Toaster position="top-center" />
@@ -125,6 +133,11 @@ export default function Home() {
         onClose={() => setShowCelebration(false)}
         milestone={celebrationData.milestone}
         message={celebrationData.message}
+      />
+      <FeatureDetailModal
+        isOpen={showFeatureModal}
+        onClose={() => setShowFeatureModal(false)}
+        feature={selectedFeature ? FEATURES_DATA[selectedFeature] : null}
       />
 
       <div className={styles.container}>
@@ -237,21 +250,25 @@ export default function Home() {
             <div className={styles.features}>
               {[
                 {
+                  key: "start",
                   icon: "🌱",
                   title: "Start Your Tree",
                   desc: "Mint your unique tree NFT and begin your growth journey on Base",
                 },
                 {
+                  key: "water",
                   icon: "💧",
                   title: "Water Daily",
                   desc: "Water once per day to keep your tree healthy and growing",
                 },
                 {
+                  key: "grow",
                   icon: "📈",
                   title: "Watch It Grow",
                   desc: "Your tree evolves through 5 stages from seed to forest tree",
                 },
                 {
+                  key: "rewards",
                   icon: "🎁",
                   title: "Earn Rewards",
                   desc: "Complete tasks for extra water and unlock rare tree NFTs",
@@ -264,11 +281,14 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  whileHover={{ y: -5 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                  onClick={() => handleFeatureClick(feature.key)}
+                  style={{ cursor: "pointer" }}
                 >
                   <div className={styles.featureIcon}>{feature.icon}</div>
                   <h3>{feature.title}</h3>
                   <p>{feature.desc}</p>
+                  <div className={styles.learnMore}>Learn More →</div>
                 </motion.div>
               ))}
             </div>

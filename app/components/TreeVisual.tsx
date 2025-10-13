@@ -247,7 +247,7 @@ export function TreeVisual({ stage, isWatering }: TreeVisualProps) {
               key={i}
               className={styles.waterDrop}
               initial={{
-                x: Math.random() * 200 - 100,
+                x: Math.random() * 120 - 60, // Centered around tree (120px spread, -60 to +60)
                 y: -20,
                 opacity: 1,
               }}
