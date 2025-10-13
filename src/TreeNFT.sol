@@ -13,13 +13,13 @@ contract TreeNFT is ERC721, Ownable {
     // ============ Structs ============
 
     struct Tree {
-        uint256 waterCount;        // Total times watered
-        uint256 lastWateredDay;    // Last day watered (in days since epoch)
-        uint256 currentStreak;     // Current consecutive days streak
-        uint256 longestStreak;     // Longest streak achieved
-        uint256 extraWater;        // Bonus water from tasks
-        uint256 stage;             // Growth stage (0-4)
-        bool exists;               // Track if tree exists
+        uint256 waterCount;
+        uint256 lastWateredDay;
+        uint256 currentStreak;
+        uint256 longestStreak;
+        uint256 extraWater;
+        uint256 stage;
+        bool exists;
     }
 
     // ============ State Variables ============
@@ -29,8 +29,6 @@ contract TreeNFT is ERC721, Ownable {
     mapping(uint256 => Tree) public trees;
     mapping(address => uint256) public userToTreeId;
     mapping(address => bool) public hasTree;
-
-    // Growth stage thresholds (days watered needed for each stage)
     uint256[5] public stageThresholds = [0, 1, 3, 7, 14];
 
     // ============ Events ============
@@ -62,8 +60,6 @@ contract TreeNFT is ERC721, Ownable {
         uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
 
-        // Initialize tree data
-        // Set lastWateredDay to max uint to allow immediate first watering
         trees[tokenId] = Tree({
             waterCount: 0,
             lastWateredDay: type(uint256).max,
@@ -91,32 +87,24 @@ contract TreeNFT is ERC721, Ownable {
 
         uint256 currentDay = block.timestamp / 1 days;
 
-        // Check if already watered today
         if (tree.lastWateredDay == currentDay) revert AlreadyWateredToday();
 
-        // Update water count
         tree.waterCount++;
 
-        // Update streak
         if (tree.lastWateredDay == type(uint256).max) {
-            // First watering
             tree.currentStreak = 1;
         } else if (tree.lastWateredDay == currentDay - 1) {
-            // Consecutive day
             tree.currentStreak++;
         } else {
-            // Streak broken
             tree.currentStreak = 1;
         }
 
-        // Update longest streak
         if (tree.currentStreak > tree.longestStreak) {
             tree.longestStreak = tree.currentStreak;
         }
 
         tree.lastWateredDay = currentDay;
 
-        // Check for stage upgrade
         _checkStageUpgrade(tokenId);
 
         emit TreeWatered(tokenId, tree.waterCount, tree.currentStreak);
@@ -148,13 +136,10 @@ contract TreeNFT is ERC721, Ownable {
         uint256 currentDay = block.timestamp / 1 days;
         require(tree.lastWateredDay != currentDay, "Already watered today");
 
-        // Consume 1 extra water
         tree.extraWater--;
         tree.waterCount++;
 
-        // Update streak
         if (tree.lastWateredDay == type(uint256).max) {
-            // First watering
             tree.currentStreak = 1;
         } else if (tree.lastWateredDay == currentDay - 1) {
             tree.currentStreak++;
@@ -168,7 +153,6 @@ contract TreeNFT is ERC721, Ownable {
 
         tree.lastWateredDay = currentDay;
 
-        // Check for stage upgrade
         _checkStageUpgrade(tokenId);
 
         emit TreeWatered(tokenId, tree.waterCount, tree.currentStreak);

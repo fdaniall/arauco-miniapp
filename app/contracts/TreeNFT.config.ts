@@ -1,7 +1,6 @@
 import { baseSepolia } from "viem/chains";
 import TreeNFTABIJson from "./TreeNFT.abi.json";
 
-// Export ABI
 export const TreeNFTABI = TreeNFTABIJson;
 
 export const TREE_NFT_CONFIG = {

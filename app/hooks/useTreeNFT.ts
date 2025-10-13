@@ -7,11 +7,6 @@ import { useAccount } from "wagmi";
 export function useTreeNFT() {
   const { address } = useAccount();
 
-  // ============ Read Functions ============
-
-  /**
-   * Check if user has a tree
-   */
   const { data: hasTree, refetch: refetchHasTree } = useReadContract({
     ...TREE_NFT_CONFIG,
     functionName: "hasTree",
@@ -21,9 +16,6 @@ export function useTreeNFT() {
     },
   });
 
-  /**
-   * Get user's tree data
-   */
   const { data: treeData, refetch: refetchTreeData } = useReadContract({
     ...TREE_NFT_CONFIG,
     functionName: "getTreeData",
@@ -33,9 +25,6 @@ export function useTreeNFT() {
     },
   });
 
-  /**
-   * Check if user can water today
-   */
   const { data: canWaterToday, refetch: refetchCanWater } = useReadContract({
     ...TREE_NFT_CONFIG,
     functionName: "canWaterToday",
@@ -45,15 +34,10 @@ export function useTreeNFT() {
     },
   });
 
-  /**
-   * Get total supply
-   */
   const { data: totalSupply } = useReadContract({
     ...TREE_NFT_CONFIG,
     functionName: "totalSupply",
   });
-
-  // ============ Write Functions ============
 
   const { data: hash, writeContract, isPending, error } = useWriteContract();
 
@@ -61,9 +45,6 @@ export function useTreeNFT() {
     hash,
   });
 
-  /**
-   * Mint a new tree NFT
-   */
   const mintTree = () => {
     writeContract({
       ...TREE_NFT_CONFIG,
@@ -71,9 +52,6 @@ export function useTreeNFT() {
     });
   };
 
-  /**
-   * Water the tree
-   */
   const waterTree = () => {
     writeContract({
       ...TREE_NFT_CONFIG,
@@ -81,9 +59,6 @@ export function useTreeNFT() {
     });
   };
 
-  /**
-   * Use extra water
-   */
   const useExtraWater = () => {
     writeContract({
       ...TREE_NFT_CONFIG,
@@ -91,20 +66,12 @@ export function useTreeNFT() {
     });
   };
 
-  // ============ Helpers ============
-
-  /**
-   * Refetch all data
-   */
   const refetchAll = () => {
     refetchHasTree();
     refetchTreeData();
     refetchCanWater();
   };
 
-  /**
-   * Parse tree data from contract
-   */
   const parsedTreeData = treeData
     ? {
         waterCount: Number((treeData as unknown[])[0]),
@@ -118,25 +85,18 @@ export function useTreeNFT() {
     : null;
 
   return {
-    // State
     hasTree: Boolean(hasTree),
     treeData: parsedTreeData,
     canWaterToday: Boolean(canWaterToday),
     totalSupply: totalSupply ? Number(totalSupply) : 0,
-
-    // Write functions
     mintTree,
     waterTree,
     useExtraWater,
-
-    // Transaction state
     isPending,
     isConfirming,
     isSuccess,
     error,
     hash,
-
-    // Utilities
     refetchAll,
   };
 }
