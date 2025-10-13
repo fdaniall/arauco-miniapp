@@ -21,15 +21,30 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
   // Disable body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+      // Lock both html and body scroll
+      const htmlElement = document.documentElement;
+      const bodyElement = document.body;
 
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+      // Save original values
+      const originalHtmlOverflow = htmlElement.style.overflow;
+      const originalBodyOverflow = bodyElement.style.overflow;
+      const originalBodyPosition = bodyElement.style.position;
+      const originalBodyWidth = bodyElement.style.width;
+
+      // Lock scroll completely
+      htmlElement.style.overflow = "hidden";
+      bodyElement.style.overflow = "hidden";
+      bodyElement.style.position = "fixed";
+      bodyElement.style.width = "100%";
+
+      // Cleanup function
+      return () => {
+        htmlElement.style.overflow = originalHtmlOverflow;
+        bodyElement.style.overflow = originalBodyOverflow;
+        bodyElement.style.position = originalBodyPosition;
+        bodyElement.style.width = originalBodyWidth;
+      };
+    }
   }, [isOpen]);
 
   if (!feature) return null;
