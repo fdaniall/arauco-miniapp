@@ -118,7 +118,10 @@ forge fmt
 ## Contract Addresses
 
 ### Base Sepolia (Testnet)
-- TreeNFT: `[TO BE DEPLOYED]`
+- TreeNFT: `0x98dD3C373911DcB130bb57bd50A120D22125690b`
+- Basescan: https://sepolia.basescan.org/address/0x98dd3c373911dcb130bb57bd50a120d22125690b
+- Deployed: Block 32315341
+- Verified: ✅
 
 ### Base Mainnet (Production)
 - TreeNFT: `[TO BE DEPLOYED]`
