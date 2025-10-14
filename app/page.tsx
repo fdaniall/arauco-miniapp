@@ -634,18 +634,14 @@ export default function Home() {
               target="_blank"
               rel="noreferrer"
             >
-              Contract
-            </a>
-            <span>•</span>
-            <a href="https://github.com/fdaniall/arauco-miniapp" target="_blank" rel="noreferrer">
-              GitHub
+              Verify Contract
             </a>
             <span>•</span>
             <a href="https://base.org" target="_blank" rel="noreferrer">
-              Base
+              Built on Base
             </a>
           </div>
-          <p className={styles.footerCredit}>Built with OnchainKit</p>
+          <p className={styles.footerCredit}>Powered by OnchainKit</p>
         </footer>
       </div>
     </>
