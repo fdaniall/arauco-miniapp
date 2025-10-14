@@ -627,16 +627,25 @@ export default function Home() {
 
         {/* Footer */}
         <footer className={styles.footer}>
-          <p>Built on Base with OnchainKit</p>
+          <p className={styles.footerText}>© 2025 Arauco Forest. All rights reserved.</p>
           <div className={styles.footerLinks}>
-            <a href="https://docs.base.org" target="_blank" rel="noreferrer">
-              Docs
+            <a
+              href="https://sepolia.basescan.org/address/0xBd13210b592860B2513A4610F6aFB35D8A6C7fdd"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Contract
             </a>
             <span>•</span>
-            <a href="https://warpcast.com" target="_blank" rel="noreferrer">
-              Farcaster
+            <a href="https://github.com/fdaniall/arauco-miniapp" target="_blank" rel="noreferrer">
+              GitHub
+            </a>
+            <span>•</span>
+            <a href="https://base.org" target="_blank" rel="noreferrer">
+              Base
             </a>
           </div>
+          <p className={styles.footerCredit}>Built with OnchainKit</p>
         </footer>
       </div>
     </>
