@@ -30,7 +30,7 @@ export default function Home() {
     canWaterToday,
     mintTree,
     waterTree,
-    useExtraWater: useExtraWaterAction,
+    useExtraWater: extraWaterAction,
     isPending,
     isConfirming,
     isSuccess,
@@ -324,7 +324,7 @@ export default function Home() {
     }
 
     toast.loading("✨ Using extra water...", { id: "extraWater" });
-    useExtraWaterAction();
+    extraWaterAction();
   };
 
   const getTreeStage = () => {
