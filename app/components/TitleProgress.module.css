@@ -1,0 +1,84 @@
+.container {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.target {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.progressBar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #4a9d7f 0%, #2d6e55 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 10px rgba(74, 157, 127, 0.5);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.days {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.percentage {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a9d7f;
+}
+
+.maxRank {
+  padding: 1rem;
+  text-align: center;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.1) 0%,
+    rgba(255, 165, 0, 0.1) 100%
+  );
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.crown {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.maxRank p {
+  margin: 0;
+  color: #ffd700;
+  font-weight: 600;
+}

@@ -15,9 +15,9 @@ export function useTreeNFT() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!address,
-      refetchInterval: 3000,
-      gcTime: 0,
-      staleTime: 0,
+      refetchInterval: 10000, // Reduced from 3s to 10s
+      gcTime: 1000 * 60 * 5, // Cache for 5 minutes
+      staleTime: 5000, // Consider fresh for 5 seconds
     },
   });
 
@@ -27,9 +27,9 @@ export function useTreeNFT() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!hasTree,
-      refetchInterval: 3000,
-      gcTime: 0,
-      staleTime: 0,
+      refetchInterval: 10000, // Reduced from 3s to 10s
+      gcTime: 1000 * 60 * 5, // Cache for 5 minutes
+      staleTime: 5000, // Consider fresh for 5 seconds
     },
   });
 
@@ -39,9 +39,9 @@ export function useTreeNFT() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!hasTree,
-      refetchInterval: 3000,
-      gcTime: 0,
-      staleTime: 0,
+      refetchInterval: 10000, // Reduced from 3s to 10s
+      gcTime: 1000 * 60 * 5, // Cache for 5 minutes
+      staleTime: 5000, // Consider fresh for 5 seconds
     },
   });
 
@@ -96,6 +96,7 @@ export function useTreeNFT() {
         longestStreak: Number(BigInt((treeData as any).longestStreak || 0)),
         extraWater: Number(BigInt((treeData as any).extraWater || 0)),
         stage: Number(BigInt((treeData as any).stage || 0)),
+        titleRank: Number((treeData as any).titleRank || 0),
         exists: Boolean((treeData as any).exists),
       }
     : null;

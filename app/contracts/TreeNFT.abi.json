@@ -123,6 +123,25 @@
   },
   {
     "type": "function",
+    "name": "getTitleString",
+    "inputs": [
+      {
+        "name": "rank",
+        "type": "uint8",
+        "internalType": "uint8"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
     "name": "getTreeData",
     "inputs": [
       {
@@ -166,6 +185,11 @@
             "name": "stage",
             "type": "uint256",
             "internalType": "uint256"
+          },
+          {
+            "name": "titleRank",
+            "type": "uint8",
+            "internalType": "uint8"
           },
           {
             "name": "exists",
@@ -507,6 +531,11 @@
         "name": "stage",
         "type": "uint256",
         "internalType": "uint256"
+      },
+      {
+        "name": "titleRank",
+        "type": "uint8",
+        "internalType": "uint8"
       },
       {
         "name": "exists",

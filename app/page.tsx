@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { Wallet } from "@coinbase/onchainkit/wallet";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
@@ -10,6 +10,9 @@ import { TreeVisual } from "./components/TreeVisual";
 import { StatsCard, DropletIcon, FlameIcon, SparklesIcon } from "./components/StatsCard";
 import { CelebrationModal } from "./components/CelebrationModal";
 import { FeatureDetailModal, FEATURES_DATA } from "./components/FeatureDetailModal";
+import TitleBadge from "./components/TitleBadge";
+import TitleProgress from "./components/TitleProgress";
+import NFTInfoCard from "./components/NFTInfoCard";
 import { useTreeNFT } from "./hooks/useTreeNFT";
 import { useAccount } from "wagmi";
 import styles from "./page.module.css";
@@ -35,6 +38,11 @@ export default function Home() {
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
 
+  // Track if we've already handled this success
+  const isHandlingSuccessRef = useRef(false);
+  // Track which milestones we've already celebrated
+  const celebratedMilestonesRef = useRef<Set<number>>(new Set());
+
   useEffect(() => {
     if (!isMiniAppReady) {
       setMiniAppReady();
@@ -42,7 +50,10 @@ export default function Home() {
   }, [setMiniAppReady, isMiniAppReady]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && !isHandlingSuccessRef.current) {
+      // Prevent duplicate handling
+      isHandlingSuccessRef.current = true;
+
       toast.dismiss("mint");
       toast.dismiss("water");
 
@@ -55,49 +66,76 @@ export default function Home() {
           },
         });
 
-        setTimeout(async () => {
-          await refetchAll();
+        // Wait for blockchain to update
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-          if (treeData) {
-            const waterCount = treeData.waterCount;
-            if (waterCount === 1) {
-              setCelebrationData({
-                milestone: "First Drop!",
-                message: "You've planted your first seed. Keep watering daily to watch it grow!",
-              });
-              setShowCelebration(true);
-            } else if (waterCount === 3) {
-              setCelebrationData({
-                milestone: "Sprout Unlocked!",
-                message: "Your dedication is showing! Your tree is starting to sprout.",
-              });
-              setShowCelebration(true);
-            } else if (waterCount === 7) {
-              setCelebrationData({
-                milestone: "One Week Streak! 🔥",
-                message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
-              });
-              setShowCelebration(true);
-            } else if (waterCount === 14) {
-              setCelebrationData({
-                milestone: "Mature Tree Achievement! 🌳",
-                message: "Two weeks of consistent care! Your tree has matured beautifully.",
-              });
-              setShowCelebration(true);
-            } else if (waterCount === 30) {
-              setCelebrationData({
-                milestone: "Forest Guardian! 🏆",
-                message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
-              });
-              setShowCelebration(true);
-            }
-          }
-        }, 2000);
+        // Refetch data
+        await refetchAll();
+
+        // Wait a bit more for state to update
+        await new Promise(resolve => setTimeout(resolve, 500));
       };
 
       handleSuccess();
     }
-  }, [isSuccess, refetchAll, treeData]);
+
+    // Reset flag when isSuccess becomes false
+    if (!isSuccess) {
+      isHandlingSuccessRef.current = false;
+    }
+  }, [isSuccess, refetchAll]);
+
+  // Separate effect for checking milestones
+  useEffect(() => {
+    if (!treeData || !isSuccess) return;
+
+    const waterCount = treeData.waterCount;
+
+    // Skip if we've already celebrated this milestone
+    if (celebratedMilestonesRef.current.has(waterCount)) {
+      return;
+    }
+
+    // Check for milestones
+    let shouldCelebrate = false;
+
+    if (waterCount === 1) {
+      setCelebrationData({
+        milestone: "First Drop!",
+        message: "You've planted your first seed. Keep watering daily to watch it grow!",
+      });
+      shouldCelebrate = true;
+    } else if (waterCount === 3) {
+      setCelebrationData({
+        milestone: "Sprout Unlocked!",
+        message: "Your dedication is showing! Your tree is starting to sprout.",
+      });
+      shouldCelebrate = true;
+    } else if (waterCount === 7) {
+      setCelebrationData({
+        milestone: "One Week Streak! 🔥",
+        message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
+      });
+      shouldCelebrate = true;
+    } else if (waterCount === 14) {
+      setCelebrationData({
+        milestone: "Mature Tree Achievement! 🌳",
+        message: "Two weeks of consistent care! Your tree has matured beautifully.",
+      });
+      shouldCelebrate = true;
+    } else if (waterCount === 30) {
+      setCelebrationData({
+        milestone: "Forest Guardian! 🏆",
+        message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
+      });
+      shouldCelebrate = true;
+    }
+
+    if (shouldCelebrate) {
+      celebratedMilestonesRef.current.add(waterCount);
+      setShowCelebration(true);
+    }
+  }, [treeData?.waterCount, isSuccess]);
 
   useEffect(() => {
     if (error) {
@@ -143,6 +181,13 @@ export default function Home() {
   const handleFeatureClick = (featureKey: string) => {
     setSelectedFeature(featureKey);
     setShowFeatureModal(true);
+  };
+
+  const scrollToTree = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (
@@ -200,6 +245,11 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, duration: 0.6 }}
           >
+            {/* Title Badge */}
+            {hasTree && treeData && (
+              <TitleBadge titleRank={treeData.titleRank} waterCount={daysWatered} />
+            )}
+
             <div className={styles.treeContainer}>
               <div className={styles.treeStageWrapper}>
                 <TreeVisual stage={getTreeStageIndex()} isWatering={isWatering} />
@@ -214,6 +264,11 @@ export default function Home() {
                 </motion.div>
               </div>
             </div>
+
+            {/* Title Progress */}
+            {hasTree && treeData && (
+              <TitleProgress titleRank={treeData.titleRank} waterCount={daysWatered} />
+            )}
 
             {/* Stats */}
             <div className={styles.stats}>
@@ -239,6 +294,17 @@ export default function Home() {
                 delay={0.7}
               />
             </div>
+
+            {/* NFT Info Card */}
+            {hasTree && treeData && (
+              <NFTInfoCard
+                stage={getTreeStageIndex()}
+                titleRank={treeData.titleRank}
+                waterCount={daysWatered}
+                currentStreak={currentStreak}
+                contractAddress={process.env.NEXT_PUBLIC_TREE_NFT_ADDRESS || ""}
+              />
+            )}
 
             {!isConnected ? (
               <motion.div
@@ -311,12 +377,6 @@ export default function Home() {
                   title: "Watch It Grow",
                   desc: "Your tree evolves through 5 stages from seed to forest tree",
                 },
-                {
-                  key: "rewards",
-                  icon: "🎁",
-                  title: "Earn Rewards",
-                  desc: "Complete tasks for extra water and unlock rare tree NFTs",
-                },
               ].map((feature, i) => (
                 <motion.div
                   key={i}
@@ -352,6 +412,7 @@ export default function Home() {
             </p>
             <motion.button
               className={styles.ctaButton}
+              onClick={scrollToTree}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

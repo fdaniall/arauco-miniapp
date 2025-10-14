@@ -19,6 +19,7 @@ contract TreeNFT is ERC721, Ownable {
         uint256 longestStreak;
         uint256 extraWater;
         uint256 stage;
+        uint8 titleRank;
         bool exists;
     }
 
@@ -67,6 +68,7 @@ contract TreeNFT is ERC721, Ownable {
             longestStreak: 0,
             extraWater: 0,
             stage: 0,
+            titleRank: 0,
             exists: true
         });
 
@@ -196,6 +198,18 @@ contract TreeNFT is ERC721, Ownable {
         return _nextTokenId;
     }
 
+    /**
+     * @dev Get title string based on rank
+     */
+    function getTitleString(uint8 rank) public pure returns (string memory) {
+        if (rank == 0) return "Seedling Keeper";
+        if (rank == 1) return "Novice Gardener";
+        if (rank == 2) return "Expert Gardener";
+        if (rank == 3) return "Master Gardener";
+        if (rank == 4) return "Forest Guardian";
+        return "Seedling Keeper";
+    }
+
     // ============ Internal Functions ============
 
     /**
@@ -219,6 +233,37 @@ contract TreeNFT is ERC721, Ownable {
             tree.stage = newStage;
             emit StageUpgraded(tokenId, newStage);
         }
+
+        // Update title rank based on water count
+        _updateTitleRank(tokenId);
+    }
+
+    /**
+     * @dev Update title rank based on water count
+     * 0: Seedling Keeper (0-6 days)
+     * 1: Novice Gardener (7-29 days)
+     * 2: Expert Gardener (30-99 days)
+     * 3: Master Gardener (100-364 days)
+     * 4: Forest Guardian (365+ days)
+     */
+    function _updateTitleRank(uint256 tokenId) internal {
+        Tree storage tree = trees[tokenId];
+        uint256 waterCount = tree.waterCount;
+
+        uint8 newRank;
+        if (waterCount >= 365) {
+            newRank = 4;
+        } else if (waterCount >= 100) {
+            newRank = 3;
+        } else if (waterCount >= 30) {
+            newRank = 2;
+        } else if (waterCount >= 7) {
+            newRank = 1;
+        } else {
+            newRank = 0;
+        }
+
+        tree.titleRank = newRank;
     }
 
     /**
