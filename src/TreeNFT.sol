@@ -55,7 +55,7 @@ contract TreeNFT is ERC721, Ownable {
     // ============ Public Functions ============
 
     /**
-     * @dev Mint a new tree NFT (one per address)
+     * @dev Mint a new tree NFT (one per address) and water it for the first time
      */
     function mintTree() external {
         if (hasTree[msg.sender]) revert AlreadyHasTree();
@@ -63,11 +63,13 @@ contract TreeNFT is ERC721, Ownable {
         uint256 tokenId = _nextTokenId++;
         _safeMint(msg.sender, tokenId);
 
+        uint256 currentDay = block.timestamp / 1 days;
+
         trees[tokenId] = Tree({
-            waterCount: 0,
-            lastWateredDay: type(uint256).max,
-            currentStreak: 0,
-            longestStreak: 0,
+            waterCount: 1,
+            lastWateredDay: currentDay,
+            currentStreak: 1,
+            longestStreak: 1,
             extraWater: 0,
             stage: 0,
             titleRank: 0,
@@ -78,6 +80,7 @@ contract TreeNFT is ERC721, Ownable {
         hasTree[msg.sender] = true;
 
         emit TreeMinted(msg.sender, tokenId);
+        emit TreeWatered(tokenId, 1, 1);
     }
 
     /**
