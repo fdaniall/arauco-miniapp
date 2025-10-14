@@ -45,50 +45,57 @@ export default function Home() {
     if (isSuccess) {
       toast.dismiss("mint");
       toast.dismiss("water");
-      refetchAll();
 
-      toast.success("✨ Transaction confirmed!", {
-        duration: 2000,
-        style: {
-          background: "#2d6e55",
-          color: "#fff",
-        },
-      });
+      const handleSuccess = async () => {
+        toast.success("✨ Transaction confirmed!", {
+          duration: 2000,
+          style: {
+            background: "#2d6e55",
+            color: "#fff",
+          },
+        });
 
-      if (treeData) {
-        const waterCount = treeData.waterCount;
-        if (waterCount === 1) {
-          setCelebrationData({
-            milestone: "First Drop!",
-            message: "You've planted your first seed. Keep watering daily to watch it grow!",
-          });
-          setShowCelebration(true);
-        } else if (waterCount === 3) {
-          setCelebrationData({
-            milestone: "Sprout Unlocked!",
-            message: "Your dedication is showing! Your tree is starting to sprout.",
-          });
-          setShowCelebration(true);
-        } else if (waterCount === 7) {
-          setCelebrationData({
-            milestone: "One Week Streak! 🔥",
-            message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
-          });
-          setShowCelebration(true);
-        } else if (waterCount === 14) {
-          setCelebrationData({
-            milestone: "Mature Tree Achievement! 🌳",
-            message: "Two weeks of consistent care! Your tree has matured beautifully.",
-          });
-          setShowCelebration(true);
-        } else if (waterCount === 30) {
-          setCelebrationData({
-            milestone: "Forest Guardian! 🏆",
-            message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
-          });
-          setShowCelebration(true);
-        }
-      }
+        setTimeout(async () => {
+          await refetchAll();
+
+          if (treeData) {
+            const waterCount = treeData.waterCount;
+            if (waterCount === 1) {
+              setCelebrationData({
+                milestone: "First Drop!",
+                message: "You've planted your first seed. Keep watering daily to watch it grow!",
+              });
+              setShowCelebration(true);
+            } else if (waterCount === 3) {
+              setCelebrationData({
+                milestone: "Sprout Unlocked!",
+                message: "Your dedication is showing! Your tree is starting to sprout.",
+              });
+              setShowCelebration(true);
+            } else if (waterCount === 7) {
+              setCelebrationData({
+                milestone: "One Week Streak! 🔥",
+                message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
+              });
+              setShowCelebration(true);
+            } else if (waterCount === 14) {
+              setCelebrationData({
+                milestone: "Mature Tree Achievement! 🌳",
+                message: "Two weeks of consistent care! Your tree has matured beautifully.",
+              });
+              setShowCelebration(true);
+            } else if (waterCount === 30) {
+              setCelebrationData({
+                milestone: "Forest Guardian! 🏆",
+                message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
+              });
+              setShowCelebration(true);
+            }
+          }
+        }, 2000);
+      };
+
+      handleSuccess();
     }
   }, [isSuccess, refetchAll, treeData]);
 

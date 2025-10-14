@@ -13,6 +13,9 @@ export function useTreeNFT() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!address,
+      refetchInterval: 3000,
+      gcTime: 0,
+      staleTime: 0,
     },
   });
 
@@ -22,6 +25,9 @@ export function useTreeNFT() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!hasTree,
+      refetchInterval: 3000,
+      gcTime: 0,
+      staleTime: 0,
     },
   });
 
@@ -31,6 +37,9 @@ export function useTreeNFT() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!address && !!hasTree,
+      refetchInterval: 3000,
+      gcTime: 0,
+      staleTime: 0,
     },
   });
 
@@ -69,10 +78,12 @@ export function useTreeNFT() {
     });
   };
 
-  const refetchAll = () => {
-    refetchHasTree();
-    refetchTreeData();
-    refetchCanWater();
+  const refetchAll = async () => {
+    await Promise.all([
+      refetchHasTree(),
+      refetchTreeData(),
+      refetchCanWater(),
+    ]);
   };
 
   const parsedTreeData = treeData
@@ -86,6 +97,15 @@ export function useTreeNFT() {
         exists: Boolean((treeData as unknown[])[6]),
       }
     : null;
+
+  if (parsedTreeData) {
+    console.log("🌳 Tree Data from Blockchain:", {
+      waterCount: parsedTreeData.waterCount,
+      stage: parsedTreeData.stage,
+      currentStreak: parsedTreeData.currentStreak,
+      raw: treeData,
+    });
+  }
 
   return {
     hasTree: Boolean(hasTree),
