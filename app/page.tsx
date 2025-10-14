@@ -10,15 +10,25 @@ import { TreeVisual } from "./components/TreeVisual";
 import { StatsCard, DropletIcon, FlameIcon, SparklesIcon } from "./components/StatsCard";
 import { CelebrationModal } from "./components/CelebrationModal";
 import { FeatureDetailModal, FEATURES_DATA } from "./components/FeatureDetailModal";
+import { useTreeNFT } from "./hooks/useTreeNFT";
+import { useAccount } from "wagmi";
 import styles from "./page.module.css";
 
 export default function Home() {
   const { setMiniAppReady, isMiniAppReady } = useMiniKit();
-  const [daysWatered, setDaysWatered] = useState(0);
-  const [currentStreak, setCurrentStreak] = useState(0);
-  const [extraWater, _setExtraWater] = useState(0);
-  const [canWater, setCanWater] = useState(true);
-  const [isWatering, setIsWatering] = useState(false);
+  const { isConnected } = useAccount();
+  const {
+    hasTree,
+    treeData,
+    canWaterToday,
+    mintTree,
+    waterTree,
+    isPending,
+    isConfirming,
+    isSuccess,
+    refetchAll,
+  } = useTreeNFT();
+
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState({ milestone: "", message: "" });
   const [showFeatureModal, setShowFeatureModal] = useState(false);
@@ -30,94 +40,85 @@ export default function Home() {
     }
   }, [setMiniAppReady, isMiniAppReady]);
 
-  const handleWaterTree = () => {
-    if (!canWater) return;
+  useEffect(() => {
+    if (isSuccess) {
+      refetchAll();
 
-    // Start watering animation
-    setIsWatering(true);
-    setCanWater(false);
-
-    // Show toast
-    toast.success("💧 Watering your tree...", {
-      duration: 2000,
-      style: {
-        background: "#1a3a2e",
-        color: "#fff",
-        border: "1px solid rgba(168, 230, 207, 0.3)",
-      },
-    });
-
-    // Simulate API call delay
-    setTimeout(() => {
-      const newDaysWatered = daysWatered + 1;
-      const newStreak = currentStreak + 1;
-
-      setDaysWatered(newDaysWatered);
-      setCurrentStreak(newStreak);
-      setIsWatering(false);
-
-      // Check for milestones
-      if (newDaysWatered === 1) {
-        setCelebrationData({
-          milestone: "First Drop!",
-          message: "You've planted your first seed. Keep watering daily to watch it grow!",
-        });
-        setShowCelebration(true);
-      } else if (newDaysWatered === 3) {
-        setCelebrationData({
-          milestone: "Sprout Unlocked!",
-          message: "Your dedication is showing! Your tree is starting to sprout.",
-        });
-        setShowCelebration(true);
-      } else if (newDaysWatered === 7) {
-        setCelebrationData({
-          milestone: "One Week Streak! 🔥",
-          message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
-        });
-        setShowCelebration(true);
-      } else if (newDaysWatered === 14) {
-        setCelebrationData({
-          milestone: "Mature Tree Achievement! 🌳",
-          message: "Two weeks of consistent care! Your tree has matured beautifully.",
-        });
-        setShowCelebration(true);
-      } else if (newDaysWatered === 30) {
-        setCelebrationData({
-          milestone: "Forest Guardian! 🏆",
-          message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
-        });
-        setShowCelebration(true);
-      }
-
-      // Success toast
-      toast.success("✨ Tree watered successfully!", {
+      toast.success("✨ Transaction confirmed!", {
         duration: 2000,
         style: {
           background: "#2d6e55",
           color: "#fff",
         },
       });
-    }, 2000);
 
-    // Reset cooldown (10s for demo, will be 24h in production)
-    setTimeout(() => setCanWater(true), 10000);
+      if (treeData) {
+        const waterCount = treeData.waterCount;
+        if (waterCount === 1) {
+          setCelebrationData({
+            milestone: "First Drop!",
+            message: "You've planted your first seed. Keep watering daily to watch it grow!",
+          });
+          setShowCelebration(true);
+        } else if (waterCount === 3) {
+          setCelebrationData({
+            milestone: "Sprout Unlocked!",
+            message: "Your dedication is showing! Your tree is starting to sprout.",
+          });
+          setShowCelebration(true);
+        } else if (waterCount === 7) {
+          setCelebrationData({
+            milestone: "One Week Streak! 🔥",
+            message: "Amazing! You've watered for 7 days straight. Your tree is growing strong!",
+          });
+          setShowCelebration(true);
+        } else if (waterCount === 14) {
+          setCelebrationData({
+            milestone: "Mature Tree Achievement! 🌳",
+            message: "Two weeks of consistent care! Your tree has matured beautifully.",
+          });
+          setShowCelebration(true);
+        } else if (waterCount === 30) {
+          setCelebrationData({
+            milestone: "Forest Guardian! 🏆",
+            message: "30 days! You're a true forest guardian. Rare NFT unlocked!",
+          });
+          setShowCelebration(true);
+        }
+      }
+    }
+  }, [isSuccess, refetchAll, treeData]);
+
+  const handleMintTree = () => {
+    toast.loading("Minting your tree...", { id: "mint" });
+    mintTree();
+  };
+
+  const handleWaterTree = () => {
+    if (!canWaterToday) {
+      toast.error("Come back tomorrow to water!", { duration: 2000 });
+      return;
+    }
+
+    toast.loading("💧 Sending transaction...", { id: "water" });
+    waterTree();
   };
 
   const getTreeStage = () => {
-    if (daysWatered === 0) return "Seed";
-    if (daysWatered < 3) return "Sprout";
-    if (daysWatered < 7) return "Young Tree";
-    if (daysWatered < 14) return "Mature Tree";
-    return "Forest Tree";
+    const stage = treeData?.stage || 0;
+    const stages = ["Seed", "Sprout", "Young Tree", "Mature Tree", "Forest Tree"];
+    return stages[stage] || "Seed";
   };
 
   const getTreeStageIndex = () => {
-    if (daysWatered === 0) return 0;
-    if (daysWatered < 3) return 1;
-    if (daysWatered < 7) return 2;
-    if (daysWatered < 14) return 3;
-    return 4;
+    return treeData?.stage || 0;
   };
+
+  const daysWatered = treeData?.waterCount || 0;
+  const currentStreak = treeData?.currentStreak || 0;
+  const extraWater = treeData?.extraWater || 0;
+  const canWater = canWaterToday && !isPending && !isConfirming;
+  const isWatering = isPending || isConfirming;
 
   const handleFeatureClick = (featureKey: string) => {
     setSelectedFeature(featureKey);
@@ -219,23 +220,46 @@ export default function Home() {
               />
             </div>
 
-            {/* Water Button */}
-            <motion.button
-              className={`${styles.waterButton} ${!canWater ? styles.disabled : ""}`}
-              onClick={handleWaterTree}
-              disabled={!canWater || isWatering}
-              whileHover={canWater && !isWatering ? { scale: 1.05 } : {}}
-              whileTap={canWater && !isWatering ? { scale: 0.95 } : {}}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-            >
-              {isWatering
-                ? "💧 Watering..."
-                : canWater
-                ? "💧 Water Tree"
-                : "⏰ Come Back Tomorrow"}
-            </motion.button>
+            {!isConnected ? (
+              <motion.div
+                className={styles.connectPrompt}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <p>Connect your wallet to start growing your tree</p>
+              </motion.div>
+            ) : !hasTree ? (
+              <motion.button
+                className={styles.waterButton}
+                onClick={handleMintTree}
+                disabled={isPending || isConfirming}
+                whileHover={!isPending && !isConfirming ? { scale: 1.05 } : {}}
+                whileTap={!isPending && !isConfirming ? { scale: 0.95 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                {isPending || isConfirming ? "🌱 Minting..." : "🌱 Mint Your Tree"}
+              </motion.button>
+            ) : (
+              <motion.button
+                className={`${styles.waterButton} ${!canWater ? styles.disabled : ""}`}
+                onClick={handleWaterTree}
+                disabled={!canWater || isWatering}
+                whileHover={canWater && !isWatering ? { scale: 1.05 } : {}}
+                whileTap={canWater && !isWatering ? { scale: 0.95 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                {isWatering
+                  ? "💧 Watering..."
+                  : canWater
+                  ? "💧 Water Tree"
+                  : "⏰ Come Back Tomorrow"}
+              </motion.button>
+            )}
           </motion.div>
 
           {/* How It Works */}

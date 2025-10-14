@@ -137,6 +137,17 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+.connectPrompt {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+}
+
 /* Info Section */
 .infoSection {
   width: 100%;
