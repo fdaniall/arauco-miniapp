@@ -7,6 +7,8 @@ import { useAccount } from "wagmi";
 export function useTreeNFT() {
   const { address } = useAccount();
 
+  console.log("👛 Connected Wallet Address:", address);
+
   const { data: hasTree, refetch: refetchHasTree } = useReadContract({
     ...TREE_NFT_CONFIG,
     functionName: "hasTree",
@@ -88,13 +90,13 @@ export function useTreeNFT() {
 
   const parsedTreeData = treeData
     ? {
-        waterCount: Number((treeData as unknown[])[0]),
-        lastWateredDay: Number((treeData as unknown[])[1]),
-        currentStreak: Number((treeData as unknown[])[2]),
-        longestStreak: Number((treeData as unknown[])[3]),
-        extraWater: Number((treeData as unknown[])[4]),
-        stage: Number((treeData as unknown[])[5]),
-        exists: Boolean((treeData as unknown[])[6]),
+        waterCount: Number(BigInt((treeData as any).waterCount || 0)),
+        lastWateredDay: Number(BigInt((treeData as any).lastWateredDay || 0)),
+        currentStreak: Number(BigInt((treeData as any).currentStreak || 0)),
+        longestStreak: Number(BigInt((treeData as any).longestStreak || 0)),
+        extraWater: Number(BigInt((treeData as any).extraWater || 0)),
+        stage: Number(BigInt((treeData as any).stage || 0)),
+        exists: Boolean((treeData as any).exists),
       }
     : null;
 
