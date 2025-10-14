@@ -416,6 +416,21 @@ export default function Home() {
               />
             )}
 
+            {/* Contract Info Banner - Show once for new users */}
+            {isConnected && !hasTree && !isWrongNetwork && (
+              <motion.div
+                className={styles.infoBanner}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <p>ℹ️ First Time?</p>
+                <p className={styles.infoBannerText}>
+                  Your wallet may show a token warning - this is normal for new contracts. Our contract is verified on BaseScan. ✅
+                </p>
+              </motion.div>
+            )}
+
             {/* Wrong Network Warning */}
             {isWrongNetwork && (
               <motion.div

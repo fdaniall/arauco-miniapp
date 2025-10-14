@@ -148,6 +148,30 @@
   font-size: 1.1rem;
 }
 
+/* Info Banner */
+.infoBanner {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  background: rgba(100, 181, 246, 0.1);
+  border: 2px solid rgba(100, 181, 246, 0.3);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.infoBanner p:first-child {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64b5f6;
+  margin-bottom: 0.5rem;
+}
+
+.infoBannerText {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
 /* Network Warning */
 .networkWarning {
   width: 100%;
