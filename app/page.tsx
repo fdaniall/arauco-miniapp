@@ -31,6 +31,7 @@ export default function Home() {
     isSuccess,
     error,
     refetchAll,
+    tokenURI,
   } = useTreeNFT();
 
   const [showCelebration, setShowCelebration] = useState(false);
@@ -303,6 +304,7 @@ export default function Home() {
                 waterCount={daysWatered}
                 currentStreak={currentStreak}
                 contractAddress={process.env.NEXT_PUBLIC_TREE_NFT_ADDRESS || ""}
+                tokenURI={tokenURI}
               />
             )}
 

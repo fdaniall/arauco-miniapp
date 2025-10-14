@@ -50,6 +50,26 @@ export function useTreeNFT() {
     functionName: "totalSupply",
   });
 
+  // Get user's token ID first
+  const { data: userToTreeId } = useReadContract({
+    ...TREE_NFT_CONFIG,
+    functionName: "userToTreeId",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address && !!hasTree,
+    },
+  });
+
+  // Then get tokenURI using the token ID
+  const { data: tokenURI } = useReadContract({
+    ...TREE_NFT_CONFIG,
+    functionName: "tokenURI",
+    args: userToTreeId !== undefined ? [userToTreeId] : undefined,
+    query: {
+      enabled: userToTreeId !== undefined,
+    },
+  });
+
   const { data: hash, writeContract, isPending, error } = useWriteContract();
 
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
@@ -115,6 +135,7 @@ export function useTreeNFT() {
     treeData: parsedTreeData,
     canWaterToday: Boolean(canWaterToday),
     totalSupply: totalSupply ? Number(totalSupply) : 0,
+    tokenURI: tokenURI as string | undefined,
     mintTree,
     waterTree,
     useExtraWater,

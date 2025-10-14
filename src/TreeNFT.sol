@@ -3,6 +3,8 @@ pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 /**
  * @title TreeNFT
@@ -210,6 +212,47 @@ contract TreeNFT is ERC721, Ownable {
         return "Seedling Keeper";
     }
 
+    /**
+     * @dev Get stage name
+     */
+    function getStageName(uint256 stage) public pure returns (string memory) {
+        if (stage == 0) return "Seed";
+        if (stage == 1) return "Sprout";
+        if (stage == 2) return "Young Tree";
+        if (stage == 3) return "Mature Tree";
+        if (stage == 4) return "Forest Tree";
+        return "Seed";
+    }
+
+    /**
+     * @dev Override tokenURI to return on-chain metadata with SVG
+     */
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireOwned(tokenId);
+
+        Tree memory tree = trees[tokenId];
+
+        // Generate SVG based on stage
+        string memory svg = _generateSVG(tree);
+
+        // Build JSON metadata
+        string memory json = string(abi.encodePacked(
+            '{"name": "Arauco Tree #', Strings.toString(tokenId), '",',
+            '"description": "A tree NFT that grows as you water it daily. Part of the Arauco Forest on Base.",',
+            '"image": "data:image/svg+xml;base64,', Base64.encode(bytes(svg)), '",',
+            '"attributes": [',
+                '{"trait_type": "Stage", "value": "', getStageName(tree.stage), '"},',
+                '{"trait_type": "Title", "value": "', getTitleString(tree.titleRank), '"},',
+                '{"trait_type": "Days Watered", "value": ', Strings.toString(tree.waterCount), '},',
+                '{"trait_type": "Current Streak", "value": ', Strings.toString(tree.currentStreak), '},',
+                '{"trait_type": "Longest Streak", "value": ', Strings.toString(tree.longestStreak), '},',
+                '{"trait_type": "Extra Water", "value": ', Strings.toString(tree.extraWater), '}',
+            ']}'
+        ));
+
+        return string(abi.encodePacked('data:application/json;base64,', Base64.encode(bytes(json))));
+    }
+
     // ============ Internal Functions ============
 
     /**
@@ -284,5 +327,64 @@ contract TreeNFT is ERC721, Ownable {
         }
 
         return from;
+    }
+
+    /**
+     * @dev Generate SVG image based on tree stage
+     */
+    function _generateSVG(Tree memory tree) internal pure returns (string memory) {
+        string memory treeEmoji;
+        string memory bgColor;
+        string memory titleEmoji;
+
+        // Determine visuals based on stage
+        if (tree.stage == 0) {
+            treeEmoji = "&#127793;"; // 🌱
+            bgColor = "#e8f5e9";
+        } else if (tree.stage == 1) {
+            treeEmoji = "&#127794;"; // 🌲
+            bgColor = "#c8e6c9";
+        } else if (tree.stage == 2) {
+            treeEmoji = "&#127795;"; // 🌳
+            bgColor = "#a5d6a7";
+        } else if (tree.stage == 3) {
+            treeEmoji = "&#127796;"; // 🌴
+            bgColor = "#81c784";
+        } else {
+            treeEmoji = "&#127797;"; // 🌲🌳
+            bgColor = "#66bb6a";
+        }
+
+        // Title emoji
+        if (tree.titleRank == 0) titleEmoji = "&#127793;"; // 🌱
+        else if (tree.titleRank == 1) titleEmoji = "&#127807;"; // 🌿
+        else if (tree.titleRank == 2) titleEmoji = "&#127795;"; // 🌳
+        else if (tree.titleRank == 3) titleEmoji = "&#127942;"; // 🏆
+        else titleEmoji = "&#128081;"; // 👑
+
+        return string(abi.encodePacked(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">',
+            '<defs>',
+            '<linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">',
+            '<stop offset="0%" style="stop-color:', bgColor, ';stop-opacity:1" />',
+            '<stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />',
+            '</linearGradient>',
+            '</defs>',
+            '<rect width="400" height="400" fill="url(#bg)"/>',
+            '<text x="200" y="150" font-size="120" text-anchor="middle">', treeEmoji, '</text>',
+            '<text x="200" y="220" font-size="24" text-anchor="middle" fill="#2d6e55" font-weight="bold">',
+            getTitleString(tree.titleRank), ' ', titleEmoji,
+            '</text>',
+            '<text x="200" y="260" font-size="18" text-anchor="middle" fill="#4a9d7f">',
+            'Days: ', Strings.toString(tree.waterCount),
+            '</text>',
+            '<text x="200" y="290" font-size="18" text-anchor="middle" fill="#4a9d7f">',
+            'Streak: ', Strings.toString(tree.currentStreak), ' &#128293;',
+            '</text>',
+            '<text x="200" y="340" font-size="14" text-anchor="middle" fill="#888">',
+            'Arauco Forest',
+            '</text>',
+            '</svg>'
+        ));
     }
 }
