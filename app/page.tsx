@@ -29,6 +29,7 @@ export default function Home() {
     canWaterToday,
     mintTree,
     waterTree,
+    useExtraWater,
     isPending,
     isConfirming,
     isSuccess,
@@ -262,6 +263,24 @@ export default function Home() {
 
     toast.loading("💧 Sending transaction...", { id: "water" });
     waterTree();
+  };
+
+  const handleUseExtraWater = () => {
+    if (isWrongNetwork) {
+      toast.error("Please switch to Base Sepolia network first", { duration: 3000 });
+      return;
+    }
+    if (!extraWater || extraWater === 0) {
+      toast.error("You don't have any extra water!", { duration: 2000 });
+      return;
+    }
+    if (!canWaterToday) {
+      toast.error("You've already watered today!", { duration: 2000 });
+      return;
+    }
+
+    toast.loading("✨ Using extra water...", { id: "extraWater" });
+    useExtraWater();
   };
 
   const getTreeStage = () => {
@@ -500,6 +519,24 @@ export default function Home() {
                   : canWater
                   ? "💧 Water Tree"
                   : "⏰ Come Back Tomorrow"}
+              </motion.button>
+            )}
+
+            {/* Extra Water Button - Only show if user has extra water */}
+            {hasTree && extraWater > 0 && !canWaterToday && (
+              <motion.button
+                className={styles.extraWaterButton}
+                onClick={handleUseExtraWater}
+                disabled={isPending || isConfirming || isWrongNetwork}
+                whileHover={!isPending && !isConfirming ? { scale: 1.05 } : {}}
+                whileTap={!isPending && !isConfirming ? { scale: 0.95 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+              >
+                {isPending || isConfirming
+                  ? "✨ Using..."
+                  : `✨ Use Extra Water (${extraWater})`}
               </motion.button>
             )}
           </motion.div>

@@ -137,6 +137,38 @@
   color: rgba(255, 255, 255, 0.4);
 }
 
+/* Extra Water Button */
+.extraWaterButton {
+  width: 100%;
+  padding: 1rem 2rem;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #64b5f6 0%, #1e88e5 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(100, 181, 246, 0.3);
+}
+
+.extraWaterButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100, 181, 246, 0.4);
+}
+
+.extraWaterButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.extraWaterButton:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.4);
+}
+
 .connectPrompt {
   width: 100%;
   padding: 1.5rem 2rem;

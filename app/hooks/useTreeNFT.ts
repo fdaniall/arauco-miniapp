@@ -119,15 +119,6 @@ export function useTreeNFT() {
       }
     : null;
 
-  if (parsedTreeData) {
-    console.log("🌳 Tree Data from Blockchain:", {
-      waterCount: parsedTreeData.waterCount,
-      stage: parsedTreeData.stage,
-      currentStreak: parsedTreeData.currentStreak,
-      raw: treeData,
-    });
-  }
-
   return {
     hasTree: Boolean(hasTree),
     treeData: parsedTreeData,
