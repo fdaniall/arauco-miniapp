@@ -394,7 +394,6 @@ export default function Home() {
                 icon={<FlameIcon />}
                 gradient="rgba(255, 152, 0, 0.2) 0%, rgba(255, 87, 34, 0.2) 100%"
                 delay={0.6}
-                tooltip="Water daily to maintain your streak!"
               />
               <StatsCard
                 value={extraWater}
@@ -402,7 +401,6 @@ export default function Home() {
                 icon={<SparklesIcon />}
                 gradient="rgba(100, 181, 246, 0.2) 0%, rgba(30, 136, 229, 0.2) 100%"
                 delay={0.7}
-                tooltip="Earn bonus water through social tasks like recasting & referring friends"
               />
             </div>
 
