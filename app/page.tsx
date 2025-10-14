@@ -208,11 +208,16 @@ export default function Home() {
     setShowFeatureModal(true);
   };
 
-  const scrollToTree = () => {
+  const handleGetStarted = () => {
+    // Always scroll to top first
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
+
+    // If not connected or already has tree, just scroll
+    // If connected and no tree, user can see the "Start Growing" button
+    // No need for extra action - button is already visible
   };
 
   return (
@@ -260,7 +265,9 @@ export default function Home() {
             transition={{ delay: 0.2, duration: 0.6 }}
           >
             <h1 className={styles.title}>Arauco Forest</h1>
-            <p className={styles.subtitle}>Water Your Tree Daily. Grow Your Forest.</p>
+            <p className={styles.subtitle}>
+              Water your tree daily, earn unique on-chain NFTs, and rise from Seedling to Ancient One
+            </p>
           </motion.div>
 
           {/* Tree Visualization */}
@@ -310,6 +317,7 @@ export default function Home() {
                 icon={<FlameIcon />}
                 gradient="rgba(255, 152, 0, 0.2) 0%, rgba(255, 87, 34, 0.2) 100%"
                 delay={0.6}
+                tooltip="Water daily to maintain your streak!"
               />
               <StatsCard
                 value={extraWater}
@@ -317,6 +325,7 @@ export default function Home() {
                 icon={<SparklesIcon />}
                 gradient="rgba(100, 181, 246, 0.2) 0%, rgba(30, 136, 229, 0.2) 100%"
                 delay={0.7}
+                tooltip="Earn bonus water through social tasks like recasting & referring friends"
               />
             </div>
 
@@ -426,6 +435,12 @@ export default function Home() {
                   title: "Watch It Grow",
                   desc: "Your tree evolves through 5 stages from seed to forest tree",
                 },
+                {
+                  key: "rewards",
+                  icon: "🏆",
+                  title: "Earn Titles & Rewards",
+                  desc: "Climb 5 prestigious ranks and unlock milestone celebrations",
+                },
               ].map((feature, i) => (
                 <motion.div
                   key={i}
@@ -447,6 +462,48 @@ export default function Home() {
             </div>
           </motion.div>
 
+          {/* Title System Section */}
+          <motion.div
+            className={styles.infoSection}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className={styles.sectionTitle}>🏆 Title System</h2>
+            <p className={styles.sectionDescription}>
+              Rise through 5 prestigious ranks as you nurture your tree. Each title unlocks unique
+              benefits and recognition.
+            </p>
+            <div className={styles.titleRanks}>
+              {[
+                { emoji: "🌱", name: "Seedling", days: "0 days", color: "#94c973" },
+                { emoji: "🌿", name: "Sprout Master", days: "1 day", color: "#7cb342" },
+                { emoji: "🌳", name: "Tree Keeper", days: "3 days", color: "#558b2f" },
+                { emoji: "🏞️", name: "Forest Guardian", days: "7 days", color: "#33691e" },
+                { emoji: "🌲", name: "Ancient One", days: "14+ days", color: "#1b5e20" },
+              ].map((rank, i) => (
+                <motion.div
+                  key={i}
+                  className={styles.titleRankCard}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  whileHover={{ y: -5, scale: 1.02 }}
+                >
+                  <div className={styles.titleRankIcon} style={{ color: rank.color }}>
+                    {rank.emoji}
+                  </div>
+                  <div className={styles.titleRankInfo}>
+                    <h3>{rank.name}</h3>
+                    <p>{rank.days}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
           {/* CTA Section */}
           <motion.div
             className={styles.ctaSection}
@@ -461,11 +518,11 @@ export default function Home() {
             </p>
             <motion.button
               className={styles.ctaButton}
-              onClick={scrollToTree}
+              onClick={handleGetStarted}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Get Started
+              {!isConnected ? "Connect & Start" : hasTree ? "Back to Tree" : "Get Started"}
             </motion.button>
           </motion.div>
         </main>

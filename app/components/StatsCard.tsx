@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import InfoTooltip from "./InfoTooltip";
 import styles from "./StatsCard.module.css";
 
 interface StatsCardProps {
@@ -8,9 +9,10 @@ interface StatsCardProps {
   icon: React.ReactNode;
   gradient: string;
   delay?: number;
+  tooltip?: string;
 }
 
-export function StatsCard({ value, label, icon, gradient, delay = 0 }: StatsCardProps) {
+export function StatsCard({ value, label, icon, gradient, delay = 0, tooltip }: StatsCardProps) {
   return (
     <motion.div
       className={styles.card}
@@ -31,7 +33,10 @@ export function StatsCard({ value, label, icon, gradient, delay = 0 }: StatsCard
       >
         {value}
       </motion.div>
-      <div className={styles.label}>{label}</div>
+      <div className={styles.label}>
+        {label}
+        {tooltip && <InfoTooltip text={tooltip} />}
+      </div>
 
       {/* Glow effect */}
       <div className={styles.glow} style={{ background: gradient }} />
