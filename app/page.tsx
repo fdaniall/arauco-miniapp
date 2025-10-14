@@ -26,6 +26,7 @@ export default function Home() {
     isPending,
     isConfirming,
     isSuccess,
+    error,
     refetchAll,
   } = useTreeNFT();
 
@@ -42,6 +43,8 @@ export default function Home() {
 
   useEffect(() => {
     if (isSuccess) {
+      toast.dismiss("mint");
+      toast.dismiss("water");
       refetchAll();
 
       toast.success("✨ Transaction confirmed!", {
@@ -88,6 +91,16 @@ export default function Home() {
       }
     }
   }, [isSuccess, refetchAll, treeData]);
+
+  useEffect(() => {
+    if (error) {
+      toast.dismiss("mint");
+      toast.dismiss("water");
+      toast.error(error.message || "Transaction failed. Please try again.", {
+        duration: 3000,
+      });
+    }
+  }, [error]);
 
   const handleMintTree = () => {
     toast.loading("Minting your tree...", { id: "mint" });
