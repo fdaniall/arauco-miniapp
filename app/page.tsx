@@ -14,12 +14,15 @@ import TitleBadge from "./components/TitleBadge";
 import TitleProgress from "./components/TitleProgress";
 import NFTInfoCard from "./components/NFTInfoCard";
 import { useTreeNFT } from "./hooks/useTreeNFT";
-import { useAccount } from "wagmi";
+import { useAccount, useSwitchChain, useChainId } from "wagmi";
+import { baseSepolia } from "wagmi/chains";
 import styles from "./page.module.css";
 
 export default function Home() {
   const { setMiniAppReady, isMiniAppReady } = useMiniKit();
   const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
   const {
     hasTree,
     treeData,
@@ -148,12 +151,33 @@ export default function Home() {
     }
   }, [error]);
 
+  const isWrongNetwork = isConnected && chainId !== baseSepolia.id;
+
+  const handleSwitchNetwork = async () => {
+    try {
+      await switchChain({ chainId: baseSepolia.id });
+      toast.success("Switched to Base Sepolia!", { duration: 2000 });
+    } catch (err) {
+      toast.error("Failed to switch network. Please switch manually in your wallet.", {
+        duration: 4000,
+      });
+    }
+  };
+
   const handleMintTree = () => {
+    if (isWrongNetwork) {
+      toast.error("Please switch to Base Sepolia network first", { duration: 3000 });
+      return;
+    }
     toast.loading("Registering to campaign...", { id: "mint" });
     mintTree();
   };
 
   const handleWaterTree = () => {
+    if (isWrongNetwork) {
+      toast.error("Please switch to Base Sepolia network first", { duration: 3000 });
+      return;
+    }
     if (!canWaterToday) {
       toast.error("Come back tomorrow to water!", { duration: 2000 });
       return;
@@ -306,6 +330,29 @@ export default function Home() {
                 contractAddress={process.env.NEXT_PUBLIC_TREE_NFT_ADDRESS || ""}
                 tokenURI={tokenURI}
               />
+            )}
+
+            {/* Wrong Network Warning */}
+            {isWrongNetwork && (
+              <motion.div
+                className={styles.networkWarning}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <p>⚠️ Wrong Network</p>
+                <p className={styles.networkWarningText}>
+                  Please switch to Base Sepolia testnet
+                </p>
+                <motion.button
+                  className={styles.switchNetworkButton}
+                  onClick={handleSwitchNetwork}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Switch to Base Sepolia
+                </motion.button>
+              </motion.div>
             )}
 
             {!isConnected ? (

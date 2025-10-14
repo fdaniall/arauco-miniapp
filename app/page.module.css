@@ -148,6 +148,52 @@
   font-size: 1.1rem;
 }
 
+/* Network Warning */
+.networkWarning {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  background: rgba(255, 152, 0, 0.1);
+  border: 2px solid rgba(255, 152, 0, 0.4);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.networkWarning p:first-child {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ff9800;
+  margin-bottom: 0.5rem;
+}
+
+.networkWarningText {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+}
+
+.switchNetworkButton {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+}
+
+.switchNetworkButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.4);
+}
+
+.switchNetworkButton:active {
+  transform: translateY(0);
+}
+
 /* Info Section */
 .infoSection {
   width: 100%;
