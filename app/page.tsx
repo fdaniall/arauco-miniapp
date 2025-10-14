@@ -16,11 +16,12 @@ import NFTInfoCard from "./components/NFTInfoCard";
 import { useTreeNFT } from "./hooks/useTreeNFT";
 import { useAccount, useSwitchChain, useChainId } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
+import { BASESCAN_URL } from "./constants";
 import styles from "./page.module.css";
 
 export default function Home() {
   const { setMiniAppReady, isMiniAppReady } = useMiniKit();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
   const {
@@ -42,17 +43,59 @@ export default function Home() {
   const [celebrationData, setCelebrationData] = useState({ milestone: "", message: "" });
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
+  const [showInfoBanner, setShowInfoBanner] = useState(false);
 
   // Track if we've already handled this success
   const isHandlingSuccessRef = useRef(false);
-  // Track which milestones we've already celebrated
-  const celebratedMilestonesRef = useRef<Set<number>>(new Set());
+
+  // Helper functions for localStorage milestone tracking
+  const getCelebratedMilestones = (walletAddress: string): Set<number> => {
+    if (typeof window === "undefined") return new Set();
+    try {
+      const key = `celebrated_milestones_${walletAddress.toLowerCase()}`;
+      const stored = localStorage.getItem(key);
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch (error) {
+      console.error("Error reading celebrated milestones:", error);
+      return new Set();
+    }
+  };
+
+  const saveCelebratedMilestone = (walletAddress: string, milestone: number) => {
+    if (typeof window === "undefined") return;
+    try {
+      const key = `celebrated_milestones_${walletAddress.toLowerCase()}`;
+      const milestones = getCelebratedMilestones(walletAddress);
+      milestones.add(milestone);
+      localStorage.setItem(key, JSON.stringify(Array.from(milestones)));
+    } catch (error) {
+      console.error("Error saving celebrated milestone:", error);
+    }
+  };
 
   useEffect(() => {
     if (!isMiniAppReady) {
       setMiniAppReady();
     }
   }, [setMiniAppReady, isMiniAppReady]);
+
+  // Check if user has seen the info banner before
+  useEffect(() => {
+    if (!address || hasTree) {
+      setShowInfoBanner(false);
+      return;
+    }
+
+    // Check localStorage for this wallet address
+    const key = `info_banner_seen_${address.toLowerCase()}`;
+    const hasSeenBanner = localStorage.getItem(key);
+
+    if (!hasSeenBanner) {
+      setShowInfoBanner(true);
+      // Mark as seen after showing once
+      localStorage.setItem(key, "true");
+    }
+  }, [address, hasTree]);
 
   useEffect(() => {
     if (isSuccess && !isHandlingSuccessRef.current) {
@@ -92,12 +135,13 @@ export default function Home() {
 
   // Separate effect for checking milestones
   useEffect(() => {
-    if (!treeData || !isSuccess) return;
+    if (!treeData || !isSuccess || !address) return;
 
     const waterCount = treeData.waterCount;
 
-    // Skip if we've already celebrated this milestone
-    if (celebratedMilestonesRef.current.has(waterCount)) {
+    // Skip if we've already celebrated this milestone for this wallet
+    const celebratedMilestones = getCelebratedMilestones(address);
+    if (celebratedMilestones.has(waterCount)) {
       return;
     }
 
@@ -137,10 +181,10 @@ export default function Home() {
     }
 
     if (shouldCelebrate) {
-      celebratedMilestonesRef.current.add(waterCount);
+      saveCelebratedMilestone(address, waterCount);
       setShowCelebration(true);
     }
-  }, [treeData, isSuccess]);
+  }, [treeData, isSuccess, address]);
 
   useEffect(() => {
     if (error) {
@@ -185,11 +229,11 @@ export default function Home() {
         errorMessage.includes("User denied") ||
         errorMessage.includes("user denied")
       ) {
-        toast.error("Switch cancelled. You need Base Sepolia to continue.", {
+        toast.error("Network switch cancelled. Base Sepolia is required to continue 🔗", {
           duration: 3000,
         });
       } else {
-        toast.error("Failed to switch network. Please switch manually in your wallet.", {
+        toast.error("Couldn't switch automatically. Please change network in your wallet 🔄", {
           duration: 4000,
         });
       }
@@ -213,11 +257,11 @@ export default function Home() {
           errorMessage.includes("User denied") ||
           errorMessage.includes("user denied")
         ) {
-          toast.error("Switch cancelled. You need Base Sepolia to mint your tree.", {
+          toast.error("Network switch cancelled. Base Sepolia is needed to mint 🌱", {
             duration: 3000,
           });
         } else {
-          toast.error("Please switch to Base Sepolia in your wallet settings", {
+          toast.error("Couldn't switch. Please select Base Sepolia in your wallet 🔄", {
             duration: 4000,
           });
         }
@@ -245,11 +289,11 @@ export default function Home() {
           errorMessage.includes("User denied") ||
           errorMessage.includes("user denied")
         ) {
-          toast.error("Switch cancelled. You need Base Sepolia to water your tree.", {
+          toast.error("Network switch cancelled. Base Sepolia is needed to water 💧", {
             duration: 3000,
           });
         } else {
-          toast.error("Please switch to Base Sepolia in your wallet settings", {
+          toast.error("Couldn't switch. Please select Base Sepolia in your wallet 🔄", {
             duration: 4000,
           });
         }
@@ -257,7 +301,7 @@ export default function Home() {
       return;
     }
     if (!canWaterToday) {
-      toast.error("Come back tomorrow to water!", { duration: 2000 });
+      toast.error("You've already watered today! Come back tomorrow 🌙", { duration: 3000 });
       return;
     }
 
@@ -267,15 +311,15 @@ export default function Home() {
 
   const handleUseExtraWater = () => {
     if (isWrongNetwork) {
-      toast.error("Please switch to Base Sepolia network first", { duration: 3000 });
+      toast.error("⚠️ Please switch to Base Sepolia network first", { duration: 3000 });
       return;
     }
     if (!extraWater || extraWater === 0) {
-      toast.error("You don't have any extra water!", { duration: 2000 });
+      toast.error("No extra water available. Keep watering to earn more!", { duration: 3000 });
       return;
     }
-    if (!canWaterToday) {
-      toast.error("You've already watered today!", { duration: 2000 });
+    if (canWaterToday) {
+      toast.error("You can already water today! Use regular watering instead.", { duration: 3000 });
       return;
     }
 
@@ -436,7 +480,7 @@ export default function Home() {
             )}
 
             {/* Contract Info Banner - Show once for new users */}
-            {isConnected && !hasTree && !isWrongNetwork && (
+            {showInfoBanner && isConnected && !hasTree && !isWrongNetwork && (
               <motion.div
                 className={styles.infoBanner}
                 initial={{ opacity: 0, y: 20 }}
@@ -667,7 +711,7 @@ export default function Home() {
           <p className={styles.footerText}>© 2025 Arauco Forest. All rights reserved.</p>
           <div className={styles.footerLinks}>
             <a
-              href="https://sepolia.basescan.org/address/0xBd13210b592860B2513A4610F6aFB35D8A6C7fdd"
+              href={BASESCAN_URL}
               target="_blank"
               rel="noreferrer"
             >
