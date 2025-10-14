@@ -49,6 +49,7 @@ export function useTreeNFT() {
     writeContract({
       ...TREE_NFT_CONFIG,
       functionName: "mintTree",
+      gas: BigInt(200000),
     });
   };
 
@@ -56,6 +57,7 @@ export function useTreeNFT() {
     writeContract({
       ...TREE_NFT_CONFIG,
       functionName: "waterTree",
+      gas: BigInt(200000),
     });
   };
 
@@ -63,6 +65,7 @@ export function useTreeNFT() {
     writeContract({
       ...TREE_NFT_CONFIG,
       functionName: "useExtraWater",
+      gas: BigInt(200000),
     });
   };
 
