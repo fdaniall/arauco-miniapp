@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Wallet } from "@coinbase/onchainkit/wallet";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
@@ -30,7 +30,7 @@ export default function Home() {
     canWaterToday,
     mintTree,
     waterTree,
-    useExtraWater,
+    useExtraWater: useExtraWaterAction,
     isPending,
     isConfirming,
     isSuccess,
@@ -49,7 +49,7 @@ export default function Home() {
   const isHandlingSuccessRef = useRef(false);
 
   // Helper functions for localStorage milestone tracking
-  const getCelebratedMilestones = (walletAddress: string): Set<number> => {
+  const getCelebratedMilestones = useCallback((walletAddress: string): Set<number> => {
     if (typeof window === "undefined") return new Set();
     try {
       const key = `celebrated_milestones_${walletAddress.toLowerCase()}`;
@@ -59,9 +59,9 @@ export default function Home() {
       console.error("Error reading celebrated milestones:", error);
       return new Set();
     }
-  };
+  }, []);
 
-  const saveCelebratedMilestone = (walletAddress: string, milestone: number) => {
+  const saveCelebratedMilestone = useCallback((walletAddress: string, milestone: number) => {
     if (typeof window === "undefined") return;
     try {
       const key = `celebrated_milestones_${walletAddress.toLowerCase()}`;
@@ -71,7 +71,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error saving celebrated milestone:", error);
     }
-  };
+  }, [getCelebratedMilestones]);
 
   useEffect(() => {
     if (!isMiniAppReady) {
@@ -184,7 +184,7 @@ export default function Home() {
       saveCelebratedMilestone(address, waterCount);
       setShowCelebration(true);
     }
-  }, [treeData, isSuccess, address]);
+  }, [treeData, isSuccess, address, getCelebratedMilestones, saveCelebratedMilestone]);
 
   useEffect(() => {
     if (error) {
@@ -324,7 +324,7 @@ export default function Home() {
     }
 
     toast.loading("✨ Using extra water...", { id: "extraWater" });
-    useExtraWater();
+    useExtraWaterAction();
   };
 
   const getTreeStage = () => {
