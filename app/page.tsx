@@ -145,9 +145,28 @@ export default function Home() {
     if (error) {
       toast.dismiss("mint");
       toast.dismiss("water");
-      toast.error(error.message || "Transaction failed. Please try again.", {
-        duration: 3000,
-      });
+      toast.dismiss("switch");
+
+      // Check if user rejected the request
+      const errorMessage = error.message || "";
+      if (
+        errorMessage.includes("User rejected") ||
+        errorMessage.includes("user rejected") ||
+        errorMessage.includes("User denied") ||
+        errorMessage.includes("user denied")
+      ) {
+        toast.error("Transaction cancelled. No worries, try again when ready! 👍", {
+          duration: 3000,
+          style: {
+            background: "#2d6e55",
+            color: "#fff",
+          },
+        });
+      } else {
+        toast.error(error.message || "Transaction failed. Please try again.", {
+          duration: 3000,
+        });
+      }
     }
   }, [error]);
 
@@ -157,10 +176,22 @@ export default function Home() {
     try {
       await switchChain({ chainId: baseSepolia.id });
       toast.success("Switched to Base Sepolia!", { duration: 2000 });
-    } catch (err) {
-      toast.error("Failed to switch network. Please switch manually in your wallet.", {
-        duration: 4000,
-      });
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      if (
+        errorMessage.includes("User rejected") ||
+        errorMessage.includes("user rejected") ||
+        errorMessage.includes("User denied") ||
+        errorMessage.includes("user denied")
+      ) {
+        toast.error("Switch cancelled. You need Base Sepolia to continue.", {
+          duration: 3000,
+        });
+      } else {
+        toast.error("Failed to switch network. Please switch manually in your wallet.", {
+          duration: 4000,
+        });
+      }
     }
   };
 
@@ -172,11 +203,23 @@ export default function Home() {
         await switchChain({ chainId: baseSepolia.id });
         toast.dismiss("switch");
         toast.success("Network switched! Click again to mint.", { duration: 2000 });
-      } catch (err) {
+      } catch (err: unknown) {
         toast.dismiss("switch");
-        toast.error("Please switch to Base Sepolia in your wallet settings", {
-          duration: 4000,
-        });
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        if (
+          errorMessage.includes("User rejected") ||
+          errorMessage.includes("user rejected") ||
+          errorMessage.includes("User denied") ||
+          errorMessage.includes("user denied")
+        ) {
+          toast.error("Switch cancelled. You need Base Sepolia to mint your tree.", {
+            duration: 3000,
+          });
+        } else {
+          toast.error("Please switch to Base Sepolia in your wallet settings", {
+            duration: 4000,
+          });
+        }
       }
       return;
     }
@@ -192,11 +235,23 @@ export default function Home() {
         await switchChain({ chainId: baseSepolia.id });
         toast.dismiss("switch");
         toast.success("Network switched! Click again to water.", { duration: 2000 });
-      } catch (err) {
+      } catch (err: unknown) {
         toast.dismiss("switch");
-        toast.error("Please switch to Base Sepolia in your wallet settings", {
-          duration: 4000,
-        });
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        if (
+          errorMessage.includes("User rejected") ||
+          errorMessage.includes("user rejected") ||
+          errorMessage.includes("User denied") ||
+          errorMessage.includes("user denied")
+        ) {
+          toast.error("Switch cancelled. You need Base Sepolia to water your tree.", {
+            duration: 3000,
+          });
+        } else {
+          toast.error("Please switch to Base Sepolia in your wallet settings", {
+            duration: 4000,
+          });
+        }
       }
       return;
     }
