@@ -164,18 +164,40 @@ export default function Home() {
     }
   };
 
-  const handleMintTree = () => {
+  const handleMintTree = async () => {
     if (isWrongNetwork) {
-      toast.error("Please switch to Base Sepolia network first", { duration: 3000 });
+      // Auto-prompt to switch network
+      toast.loading("Switching to Base Sepolia...", { id: "switch" });
+      try {
+        await switchChain({ chainId: baseSepolia.id });
+        toast.dismiss("switch");
+        toast.success("Network switched! Click again to mint.", { duration: 2000 });
+      } catch (err) {
+        toast.dismiss("switch");
+        toast.error("Please switch to Base Sepolia in your wallet settings", {
+          duration: 4000,
+        });
+      }
       return;
     }
     toast.loading("Registering to campaign...", { id: "mint" });
     mintTree();
   };
 
-  const handleWaterTree = () => {
+  const handleWaterTree = async () => {
     if (isWrongNetwork) {
-      toast.error("Please switch to Base Sepolia network first", { duration: 3000 });
+      // Auto-prompt to switch network
+      toast.loading("Switching to Base Sepolia...", { id: "switch" });
+      try {
+        await switchChain({ chainId: baseSepolia.id });
+        toast.dismiss("switch");
+        toast.success("Network switched! Click again to water.", { duration: 2000 });
+      } catch (err) {
+        toast.dismiss("switch");
+        toast.error("Please switch to Base Sepolia in your wallet settings", {
+          duration: 4000,
+        });
+      }
       return;
     }
     if (!canWaterToday) {
@@ -384,21 +406,29 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                {isPending || isConfirming ? "🌱 Registering..." : "🌱 Start Growing"}
+                {isPending || isConfirming
+                  ? "🌱 Registering..."
+                  : isWrongNetwork
+                  ? "🔄 Switch to Base Sepolia"
+                  : "🌱 Start Growing"}
               </motion.button>
             ) : (
               <motion.button
-                className={`${styles.waterButton} ${!canWater ? styles.disabled : ""}`}
+                className={`${styles.waterButton} ${!canWater && !isWrongNetwork ? styles.disabled : ""}`}
                 onClick={handleWaterTree}
-                disabled={!canWater || isWatering}
-                whileHover={canWater && !isWatering ? { scale: 1.05 } : {}}
-                whileTap={canWater && !isWatering ? { scale: 0.95 } : {}}
+                disabled={(!canWater || isWatering) && !isWrongNetwork}
+                whileHover={
+                  (canWater && !isWatering) || isWrongNetwork ? { scale: 1.05 } : {}
+                }
+                whileTap={(canWater && !isWatering) || isWrongNetwork ? { scale: 0.95 } : {}}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
                 {isWatering
                   ? "💧 Watering..."
+                  : isWrongNetwork
+                  ? "🔄 Switch to Base Sepolia"
                   : canWater
                   ? "💧 Water Tree"
                   : "⏰ Come Back Tomorrow"}
