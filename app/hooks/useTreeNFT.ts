@@ -7,8 +7,6 @@ import { useAccount } from "wagmi";
 export function useTreeNFT() {
   const { address } = useAccount();
 
-  console.log("👛 Connected Wallet Address:", address);
-
   const { data: hasTree, refetch: refetchHasTree } = useReadContract({
     ...TREE_NFT_CONFIG,
     functionName: "hasTree",
