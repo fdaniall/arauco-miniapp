@@ -136,7 +136,7 @@ export default function Home() {
       celebratedMilestonesRef.current.add(waterCount);
       setShowCelebration(true);
     }
-  }, [treeData?.waterCount, isSuccess]);
+  }, [treeData, isSuccess]);
 
   useEffect(() => {
     if (error) {

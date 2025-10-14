@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./MetadataModal.module.css";
 
 interface MetadataModalProps {
@@ -46,12 +47,12 @@ export default function MetadataModal({ isOpen, onClose, tokenURI }: MetadataMod
               setMetadata(data);
               setLoading(false);
             })
-            .catch((err) => {
+            .catch(() => {
               setError("Failed to load metadata");
               setLoading(false);
             });
         }
-      } catch (err) {
+      } catch {
         setError("Failed to parse metadata");
         setLoading(false);
       }
@@ -96,7 +97,14 @@ export default function MetadataModal({ isOpen, onClose, tokenURI }: MetadataMod
           {metadata && !loading && (
             <div className={styles.content}>
               <div className={styles.imageContainer}>
-                <img src={metadata.image} alt={metadata.name} className={styles.image} />
+                <Image
+                  src={metadata.image}
+                  alt={metadata.name}
+                  width={400}
+                  height={400}
+                  className={styles.image}
+                  unoptimized
+                />
               </div>
 
               <div className={styles.info}>

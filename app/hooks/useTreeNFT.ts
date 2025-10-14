@@ -110,14 +110,14 @@ export function useTreeNFT() {
 
   const parsedTreeData = treeData
     ? {
-        waterCount: Number(BigInt((treeData as any).waterCount || 0)),
-        lastWateredDay: Number(BigInt((treeData as any).lastWateredDay || 0)),
-        currentStreak: Number(BigInt((treeData as any).currentStreak || 0)),
-        longestStreak: Number(BigInt((treeData as any).longestStreak || 0)),
-        extraWater: Number(BigInt((treeData as any).extraWater || 0)),
-        stage: Number(BigInt((treeData as any).stage || 0)),
-        titleRank: Number((treeData as any).titleRank || 0),
-        exists: Boolean((treeData as any).exists),
+        waterCount: Number(BigInt(String((treeData as unknown as Record<string, bigint>).waterCount || 0))),
+        lastWateredDay: Number(BigInt(String((treeData as unknown as Record<string, bigint>).lastWateredDay || 0))),
+        currentStreak: Number(BigInt(String((treeData as unknown as Record<string, bigint>).currentStreak || 0))),
+        longestStreak: Number(BigInt(String((treeData as unknown as Record<string, bigint>).longestStreak || 0))),
+        extraWater: Number(BigInt(String((treeData as unknown as Record<string, bigint>).extraWater || 0))),
+        stage: Number(BigInt(String((treeData as unknown as Record<string, bigint>).stage || 0))),
+        titleRank: Number((treeData as unknown as Record<string, number>).titleRank || 0),
+        exists: Boolean((treeData as unknown as Record<string, boolean>).exists),
       }
     : null;
 

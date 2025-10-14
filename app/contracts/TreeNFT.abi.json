@@ -123,6 +123,25 @@
   },
   {
     "type": "function",
+    "name": "getStageName",
+    "inputs": [
+      {
+        "name": "stage",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "string",
+        "internalType": "string"
+      }
+    ],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
     "name": "getTitleString",
     "inputs": [
       {
