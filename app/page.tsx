@@ -102,8 +102,8 @@ export default function Home() {
 
     if (waterCount === 1) {
       setCelebrationData({
-        milestone: "First Drop!",
-        message: "You've planted your first seed. Keep watering daily to watch it grow!",
+        milestone: "First Watering! 💧",
+        message: "Great start! Your tree journey begins. Water daily to watch it grow!",
       });
       shouldCelebrate = true;
     } else if (waterCount === 3) {
@@ -149,7 +149,7 @@ export default function Home() {
   }, [error]);
 
   const handleMintTree = () => {
-    toast.loading("Minting your tree...", { id: "mint" });
+    toast.loading("Registering to campaign...", { id: "mint" });
     mintTree();
   };
 
@@ -328,7 +328,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
               >
-                {isPending || isConfirming ? "🌱 Minting..." : "🌱 Mint Your Tree"}
+                {isPending || isConfirming ? "🌱 Registering..." : "🌱 Start Growing"}
               </motion.button>
             ) : (
               <motion.button
