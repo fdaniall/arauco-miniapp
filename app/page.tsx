@@ -709,19 +709,6 @@ export default function Home() {
         {/* Footer */}
         <footer className={styles.footer}>
           <p className={styles.footerText}>© 2025 Arauco Forest. All rights reserved.</p>
-          <div className={styles.footerLinks}>
-            <a
-              href={BASESCAN_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Verify Contract
-            </a>
-            <span>•</span>
-            <a href="https://base.org" target="_blank" rel="noreferrer">
-              Built on Base
-            </a>
-          </div>
         </footer>
       </div>
     </>
