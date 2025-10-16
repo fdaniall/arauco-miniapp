@@ -722,7 +722,6 @@ export default function Home() {
               Built on Base
             </a>
           </div>
-          <p className={styles.footerCredit}>Powered by OnchainKit</p>
         </footer>
       </div>
     </>
