@@ -16,7 +16,6 @@ import NFTInfoCard from "./components/NFTInfoCard";
 import { useTreeNFT } from "./hooks/useTreeNFT";
 import { useAccount, useSwitchChain, useChainId } from "wagmi";
 import { baseSepolia } from "wagmi/chains";
-import { BASESCAN_URL } from "./constants";
 import styles from "./page.module.css";
 
 export default function Home() {
