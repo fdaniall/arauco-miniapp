@@ -10,15 +10,15 @@ export async function GET() {
     miniapp: {
       version: "1",
       name: "Arauco",
-      iconUrl: "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/icon.png",
-      homeUrl: "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app",
-      splashImageUrl: "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/splash.png",
+      iconUrl: "https://arauco.space/icon.png",
+      homeUrl: "https://arauco.space",
+      splashImageUrl: "https://arauco.space/splash.png",
       splashBackgroundColor: "#172F29",
-      webhookUrl: "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/api/webhook",
+      webhookUrl: "https://arauco.space/api/webhook",
       subtitle: "Grow your forest on-chain",
       description: "Water your tree daily and watch your on-chain forest grow. Collect NFTs, earn rewards, and track your environmental impact on Base blockchain.",
       screenshotUrls: [
-        "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/screenshot.png"
+        "https://arauco.space/screenshot.png"
       ],
       primaryCategory: "games",
       tags: [
@@ -28,11 +28,11 @@ export async function GET() {
         "sustainability",
         "forest"
       ],
-      heroImageUrl: "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/hero.png",
+      heroImageUrl: "https://arauco.space/hero.png",
       tagline: "Grow your forest on-chain",
       ogTitle: "Arauco Forest",
       ogDescription: "Water your tree daily and watch your on-chain forest grow. Earn rewards on Base blockchain.",
-      ogImageUrl: "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/hero.png",
+      ogImageUrl: "https://arauco.space/hero.png",
       requiredChains: [
         "eip155:8453"
       ],
