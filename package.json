@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "validate:farcaster": "node scripts/validate-farcaster-manifest.js",
+    "prebuild": "npm run validate:farcaster"
   },
   "dependencies": {
     "@coinbase/onchainkit": "latest",
