@@ -7,29 +7,29 @@
   "miniapp": {
     "version": "1",
     "name": "Arauco",
-    "iconUrl": "https://arauco.space/icon.png",
-    "homeUrl": "https://arauco.space",
-    "splashImageUrl": "https://arauco.space/splash.png",
+    "iconUrl": "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/icon.png",
+    "homeUrl": "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app",
+    "splashImageUrl": "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/splash.png",
     "splashBackgroundColor": "#172F29",
-    "webhookUrl": "https://arauco.space/api/webhook",
-    "subtitle": "Plant trees, earn credits",
-    "description": "Arauco connects tree planting with carbon credits. Plant virtual trees as NFTs, track your environmental impact, and join the sustainable blockchain future on Base.",
+    "webhookUrl": "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/api/webhook",
+    "subtitle": "Grow your forest on-chain",
+    "description": "Water your tree daily and watch your on-chain forest grow. Collect NFTs, earn rewards, and track your environmental impact on Base blockchain.",
     "screenshotUrls": [
-      "https://arauco.space/screenshot.png"
+      "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/screenshot.png"
     ],
     "primaryCategory": "social",
     "tags": [
       "climate",
       "nft",
+      "gamification",
       "sustainability",
-      "carbon-credits",
-      "base"
+      "forest"
     ],
-    "heroImageUrl": "https://arauco.space/hero.png",
-    "tagline": "Plant trees, earn credits",
-    "ogTitle": "Arauco",
-    "ogDescription": "Plant virtual trees as NFTs and earn carbon credits on Base blockchain. Join us today.",
-    "ogImageUrl": "https://arauco.space/hero.png",
+    "heroImageUrl": "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/hero.png",
+    "tagline": "Grow your forest on-chain",
+    "ogTitle": "Arauco Forest",
+    "ogDescription": "Water your tree daily and watch your on-chain forest grow. Earn rewards on Base blockchain.",
+    "ogImageUrl": "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/hero.png",
     "requiredChains": [
       "eip155:8453"
     ],
