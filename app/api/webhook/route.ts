@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Type definitions for Farcaster Mini App webhook events
 interface NotificationEvent {
   notificationId: string;
   title: string;
@@ -27,24 +26,17 @@ export async function POST(request: NextRequest) {
       data: body.data
     });
 
-    // Handle different webhook events
     switch (body.event) {
       case 'miniapp.notification':
-        // Handle notification events
-        // This is triggered when users interact with notifications
         console.log('Notification event:', body.data);
         break;
 
       case 'miniapp.install':
-        // Handle app installation
         console.log('App installed by FID:', (body.data as { fid: number }).fid);
-        // You could track this in your database
         break;
 
       case 'miniapp.uninstall':
-        // Handle app uninstallation
         console.log('App uninstalled by FID:', (body.data as { fid: number }).fid);
-        // You could update user records
         break;
 
       default:
@@ -65,7 +57,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET endpoint for webhook verification
 export async function GET() {
   return NextResponse.json({
     status: 'Arauco Farcaster webhook endpoint active',

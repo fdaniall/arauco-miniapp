@@ -1,16 +1,9 @@
-// Use production domain for Farcaster manifest
-// Set NEXT_PUBLIC_URL in Vercel env to override
 const ROOT_URL =
   process.env.NEXT_PUBLIC_URL ||
   (process.env.NODE_ENV === 'production' ? "https://arauco.space" : null) ||
   (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
   "http://localhost:3000";
 
-/**
- * MiniApp configuration object. Must follow the mini app manifest specification.
- *
- * @see {@link https://docs.base.org/mini-apps/features/manifest}
- */
 export const minikitConfig = {
   accountAssociation: {
     header: "eyJmaWQiOjM2MDc1MCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDJFQzc4MjE0OEZkMmFFRjlBOTc1MTdkQmFEODE0RGViRkUxZDliQTcifQ",

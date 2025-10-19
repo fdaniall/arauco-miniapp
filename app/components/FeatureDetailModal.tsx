@@ -18,26 +18,21 @@ interface FeatureDetailModalProps {
 }
 
 export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailModalProps) {
-  // Disable body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      // Lock both html and body scroll
       const htmlElement = document.documentElement;
       const bodyElement = document.body;
 
-      // Save original values
       const originalHtmlOverflow = htmlElement.style.overflow;
       const originalBodyOverflow = bodyElement.style.overflow;
       const originalBodyPosition = bodyElement.style.position;
       const originalBodyWidth = bodyElement.style.width;
 
-      // Lock scroll completely
       htmlElement.style.overflow = "hidden";
       bodyElement.style.overflow = "hidden";
       bodyElement.style.position = "fixed";
       bodyElement.style.width = "100%";
 
-      // Cleanup function
       return () => {
         htmlElement.style.overflow = originalHtmlOverflow;
         bodyElement.style.overflow = originalBodyOverflow;
@@ -53,7 +48,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay */}
           <motion.div
             className={styles.overlay}
             initial={{ opacity: 0 }}
@@ -61,7 +55,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
             exit={{ opacity: 0 }}
             onClick={onClose}
           >
-            {/* Modal Content */}
             <motion.div
               className={styles.modal}
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -70,12 +63,10 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close Button */}
               <button className={styles.closeButton} onClick={onClose}>
                 ✕
               </button>
 
-              {/* Icon */}
               <motion.div
                 className={styles.iconWrapper}
                 initial={{ scale: 0, rotate: -180 }}
@@ -85,7 +76,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
                 <div className={styles.icon}>{feature.icon}</div>
               </motion.div>
 
-              {/* Title */}
               <motion.h2
                 className={styles.title}
                 initial={{ opacity: 0, y: 10 }}
@@ -95,7 +85,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
                 {feature.title}
               </motion.h2>
 
-              {/* Description */}
               <motion.p
                 className={styles.description}
                 initial={{ opacity: 0, y: 10 }}
@@ -105,7 +94,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
                 {feature.description}
               </motion.p>
 
-              {/* Details Section */}
               <motion.div
                 className={styles.section}
                 initial={{ opacity: 0, y: 10 }}
@@ -129,7 +117,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
                 </ul>
               </motion.div>
 
-              {/* Benefits Section */}
               <motion.div
                 className={styles.section}
                 initial={{ opacity: 0, y: 10 }}
@@ -153,7 +140,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
                 </ul>
               </motion.div>
 
-              {/* CTA Button */}
               <motion.button
                 className={styles.ctaButton}
                 initial={{ opacity: 0, y: 10 }}
@@ -173,7 +159,6 @@ export function FeatureDetailModal({ isOpen, onClose, feature }: FeatureDetailMo
   );
 }
 
-// Feature data
 export const FEATURES_DATA: Record<string, FeatureDetail> = {
   start: {
     icon: "🌱",

@@ -44,7 +44,6 @@ export function StatsCard({ value, label, icon, gradient, delay = 0, tooltip }: 
   );
 }
 
-// Icon Components
 export function DropletIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={styles.icon}>
