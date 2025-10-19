@@ -9,7 +9,7 @@ export const MILESTONE_DAYS = {
 } as const;
 
 export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_TREE_NFT_ADDRESS || "";
-export const BASESCAN_URL = `https://sepolia.basescan.org/address/${CONTRACT_ADDRESS}`;
+export const BASESCAN_URL = `https://basescan.org/address/${CONTRACT_ADDRESS}`;
 
 export const POLLING_INTERVAL = 10000;
 export const CACHE_TIME = 1000 * 60 * 5;

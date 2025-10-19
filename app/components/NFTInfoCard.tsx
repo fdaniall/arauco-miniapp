@@ -26,7 +26,7 @@ export default function NFTInfoCard({
   tokenURI,
 }: NFTInfoCardProps) {
   const titleInfo = getTitleInfo(titleRank);
-  const baseScanUrl = `https://sepolia.basescan.org/address/${contractAddress}`;
+  const baseScanUrl = `https://basescan.org/address/${contractAddress}`;
   const [showMetadataModal, setShowMetadataModal] = useState(false);
 
   return (

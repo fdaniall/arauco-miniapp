@@ -15,7 +15,7 @@ import TitleProgress from "./components/TitleProgress";
 import NFTInfoCard from "./components/NFTInfoCard";
 import { useTreeNFT } from "./hooks/useTreeNFT";
 import { useAccount, useSwitchChain, useChainId } from "wagmi";
-import { baseSepolia } from "wagmi/chains";
+import { base } from "wagmi/chains";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -214,12 +214,12 @@ export default function Home() {
     }
   }, [error]);
 
-  const isWrongNetwork = isConnected && chainId !== baseSepolia.id;
+  const isWrongNetwork = isConnected && chainId !== base.id;
 
   const handleSwitchNetwork = async () => {
     try {
-      await switchChain({ chainId: baseSepolia.id });
-      toast.success("Switched to Base Sepolia!", { duration: 2000 });
+      await switchChain({ chainId: base.id });
+      toast.success("Switched to Base Mainnet!", { duration: 2000 });
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       if (
@@ -228,7 +228,7 @@ export default function Home() {
         errorMessage.includes("User denied") ||
         errorMessage.includes("user denied")
       ) {
-        toast.error("Network switch cancelled. Base Sepolia is required to continue 🔗", {
+        toast.error("Network switch cancelled. Base Mainnet is required to continue 🔗", {
           duration: 3000,
         });
       } else {
@@ -242,9 +242,9 @@ export default function Home() {
   const handleMintTree = async () => {
     if (isWrongNetwork) {
       // Auto-prompt to switch network
-      toast.loading("Switching to Base Sepolia...", { id: "switch" });
+      toast.loading("Switching to Base Mainnet...", { id: "switch" });
       try {
-        await switchChain({ chainId: baseSepolia.id });
+        await switchChain({ chainId: base.id });
         toast.dismiss("switch");
         toast.success("Network switched! Click again to mint.", { duration: 2000 });
       } catch (err: unknown) {
@@ -256,11 +256,11 @@ export default function Home() {
           errorMessage.includes("User denied") ||
           errorMessage.includes("user denied")
         ) {
-          toast.error("Network switch cancelled. Base Sepolia is needed to mint 🌱", {
+          toast.error("Network switch cancelled. Base Mainnet is needed to mint 🌱", {
             duration: 3000,
           });
         } else {
-          toast.error("Couldn't switch. Please select Base Sepolia in your wallet 🔄", {
+          toast.error("Couldn't switch. Please select Base Mainnet in your wallet 🔄", {
             duration: 4000,
           });
         }
@@ -274,9 +274,9 @@ export default function Home() {
   const handleWaterTree = async () => {
     if (isWrongNetwork) {
       // Auto-prompt to switch network
-      toast.loading("Switching to Base Sepolia...", { id: "switch" });
+      toast.loading("Switching to Base Mainnet...", { id: "switch" });
       try {
-        await switchChain({ chainId: baseSepolia.id });
+        await switchChain({ chainId: base.id });
         toast.dismiss("switch");
         toast.success("Network switched! Click again to water.", { duration: 2000 });
       } catch (err: unknown) {
@@ -288,11 +288,11 @@ export default function Home() {
           errorMessage.includes("User denied") ||
           errorMessage.includes("user denied")
         ) {
-          toast.error("Network switch cancelled. Base Sepolia is needed to water 💧", {
+          toast.error("Network switch cancelled. Base Mainnet is needed to water 💧", {
             duration: 3000,
           });
         } else {
-          toast.error("Couldn't switch. Please select Base Sepolia in your wallet 🔄", {
+          toast.error("Couldn't switch. Please select Base Mainnet in your wallet 🔄", {
             duration: 4000,
           });
         }
@@ -310,7 +310,7 @@ export default function Home() {
 
   const handleUseExtraWater = () => {
     if (isWrongNetwork) {
-      toast.error("⚠️ Please switch to Base Sepolia network first", { duration: 3000 });
+      toast.error("⚠️ Please switch to Base Mainnet network first", { duration: 3000 });
       return;
     }
     if (!extraWater || extraWater === 0) {
@@ -503,7 +503,7 @@ export default function Home() {
               >
                 <p>⚠️ Wrong Network</p>
                 <p className={styles.networkWarningText}>
-                  Please switch to Base Sepolia testnet
+                  Please switch to Base Mainnet
                 </p>
                 <motion.button
                   className={styles.switchNetworkButton}
@@ -511,7 +511,7 @@ export default function Home() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  Switch to Base Sepolia
+                  Switch to Base Mainnet
                 </motion.button>
               </motion.div>
             )}
@@ -539,7 +539,7 @@ export default function Home() {
                 {isPending || isConfirming
                   ? "🌱 Registering..."
                   : isWrongNetwork
-                  ? "🔄 Switch to Base Sepolia"
+                  ? "🔄 Switch to Base Mainnet"
                   : "🌱 Start Growing"}
               </motion.button>
             ) : (
@@ -558,7 +558,7 @@ export default function Home() {
                 {isWatering
                   ? "💧 Watering..."
                   : isWrongNetwork
-                  ? "🔄 Switch to Base Sepolia"
+                  ? "🔄 Switch to Base Mainnet"
                   : canWater
                   ? "💧 Water Tree"
                   : "⏰ Come Back Tomorrow"}
