@@ -1,5 +1,8 @@
+// Use production domain for Farcaster manifest
+// Set NEXT_PUBLIC_URL in Vercel env to override
 const ROOT_URL =
   process.env.NEXT_PUBLIC_URL ||
+  (process.env.NODE_ENV === 'production' ? "https://arauco.space" : null) ||
   (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ||
   "http://localhost:3000";
 
@@ -10,9 +13,9 @@ const ROOT_URL =
  */
 export const minikitConfig = {
   accountAssociation: {
-    header: "",
-    payload: "",
-    signature: "",
+    header: "eyJmaWQiOjM2MDc1MCwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDJFQzc4MjE0OEZkMmFFRjlBOTc1MTdkQmFEODE0RGViRkUxZDliQTcifQ",
+    payload: "eyJkb21haW4iOiJhcmF1Y28uc3BhY2UifQ",
+    signature: "8oxoDrJGh0HCdHDPCEq3O7l7r6W5ONcDa85mZYBeKU9pSTsJ13fFcKko0GGd4q9pAw82oHMyZPQXc1Vbz9qYFBw=",
   },
   baseBuilder: {
     allowedAddresses: [],
