@@ -20,7 +20,7 @@ export async function GET() {
       screenshotUrls: [
         "https://arauco-miniapp-9ikqcba7w-fdanialls-projects.vercel.app/screenshot.png"
       ],
-      primaryCategory: "social",
+      primaryCategory: "games",
       tags: [
         "climate",
         "nft",
